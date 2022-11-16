@@ -1,0 +1,11 @@
+C:\Users\spiro\source\repos\DrawingAppASE\DrawingAppASE\bin\Debug\DrawingAppASE.exe.config
+C:\Users\spiro\source\repos\DrawingAppASE\DrawingAppASE\bin\Debug\DrawingAppASE.exe
+C:\Users\spiro\source\repos\DrawingAppASE\DrawingAppASE\bin\Debug\DrawingAppASE.pdb
+C:\Users\spiro\source\repos\DrawingAppASE\DrawingAppASE\obj\Debug\DrawingAppASE.csproj.AssemblyReference.cache
+C:\Users\spiro\source\repos\DrawingAppASE\DrawingAppASE\obj\Debug\DrawingAppASE.csproj.SuggestedBindingRedirects.cache
+C:\Users\spiro\source\repos\DrawingAppASE\DrawingAppASE\obj\Debug\DrawingAppASE.MainForm.resources
+C:\Users\spiro\source\repos\DrawingAppASE\DrawingAppASE\obj\Debug\DrawingAppASE.Properties.Resources.resources
+C:\Users\spiro\source\repos\DrawingAppASE\DrawingAppASE\obj\Debug\DrawingAppASE.csproj.GenerateResource.cache
+C:\Users\spiro\source\repos\DrawingAppASE\DrawingAppASE\obj\Debug\DrawingAppASE.csproj.CoreCompileInputs.cache
+C:\Users\spiro\source\repos\DrawingAppASE\DrawingAppASE\obj\Debug\DrawingAppASE.exe
+C:\Users\spiro\source\repos\DrawingAppASE\DrawingAppASE\obj\Debug\DrawingAppASE.pdb
