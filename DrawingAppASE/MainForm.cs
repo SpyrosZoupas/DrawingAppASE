@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -14,11 +15,13 @@ namespace DrawingAppASE
     public partial class MainForm : Form
     {
         readonly Bitmap OutputBitmap;
+        const int xBitMapSize = 506;
+        const int yBitMapSize = 396;
 
         public MainForm()
         {
             InitializeComponent();
-            OutputBitmap = new Bitmap(506, 396);
+            OutputBitmap = new Bitmap(xBitMapSize, yBitMapSize);
         }
 
         private void MultiLineButton_Click(object sender, EventArgs e)

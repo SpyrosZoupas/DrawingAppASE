@@ -8,5 +8,9 @@ namespace DrawingAppASE
 {
     public class Parser
     {
+        public static Action ParseAction(IEnumerable<string>)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
