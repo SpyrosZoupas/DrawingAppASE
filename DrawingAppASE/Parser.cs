@@ -9,9 +9,8 @@ namespace DrawingAppASE
         private static int x = 0;
         private static int y = 0;
         private static bool fill = false;
-        public static List<string> commands;
 
-        public static void ParseAction(Graphics graphics, Pen pen)
+        public static void ParseAction(Graphics graphics, Pen pen, IEnumerable<string> commands)
         {
             foreach (var input in commands)
             {
@@ -34,6 +33,10 @@ namespace DrawingAppASE
                 {
                     
                     var parameters = input.Split(' ')[1].Split(',');
+                    foreach (var parameter in parameters)
+                    {
+                        Parser.ParseInt(parameter);
+                    }
                     switch (command)
                     {
                         case "moveto":
@@ -74,7 +77,7 @@ namespace DrawingAppASE
                             }
                             else
                             {
-
+                                throw new ArgumentException("Invalid parameters");
                             }
                             break;
                         case "circle":
@@ -87,10 +90,10 @@ namespace DrawingAppASE
                             break;
                         case "triangle":
                             var triangle = new Triangle(x, y, Parser.ParseInt(parameters[0]), Parser.ParseInt(parameters[1]), Parser.ParseInt(parameters[2]), Parser.ParseInt(parameters[3]), Parser.ParseInt(parameters[4]), Parser.ParseInt(parameters[5]));
-                            triangle.Draw(graphics, pen);
+                            triangle.Draw(graphics, pen, fill);
                             break;
                         default:
-                            break;
+                            throw new ArgumentException("Invalid command");
                     }
                 }
             }
@@ -103,16 +106,8 @@ namespace DrawingAppASE
             }
             else
             {
-                throw new NotImplementedException();
+                throw new ArgumentException("Invalid parameters");
             }
-        }
-
-        public static Action ParseInput(string input) //should output command
-        {
-            throw new NotImplementedException();
         }
     }
 }
-    //so prob ParseAction parses it then passes maybe the command only to ParseInput as a string and outputs a command object so which command? 
-
-

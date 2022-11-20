@@ -21,6 +21,7 @@ namespace DrawingAppASE
         private const int yBitMapSize = 396;
         private Pen pen;
         private Graphics graphics;
+        private List<string> commands;
        
 
         public MainForm()
@@ -28,6 +29,7 @@ namespace DrawingAppASE
             InitializeComponent();
             OutputBitmap = new Bitmap(xBitMapSize, yBitMapSize);
             pen = new Pen(Color.Red);
+            commands = new List<string>();
         }
 
         public void MultiLineButton_Click(object sender, EventArgs e)
@@ -60,20 +62,6 @@ namespace DrawingAppASE
         {
             graphics = e.Graphics;
             graphics.DrawImageUnscaled(OutputBitmap, 0, 0);
-            if (Parser.commands != null)
-            {
-                Parser.ParseAction(graphics, pen);
-            }
-        }
-
-        private void SaveButton_Click(object sender, EventArgs e)
-        {
-            SaveText();
-        }
-
-        private void LoadButton_Click(object sender, EventArgs e)
-        {
-            LoadText();
         }
 
         private void SaveText()
@@ -96,20 +84,39 @@ namespace DrawingAppASE
 
         private void ProcessMultiLine()
         {
-            Parser.commands = new List<string>();
-            Parser.commands.AddRange(MultiLineBox.Text.Replace('\r', ' ').Trim().ToLower().Split('\n'));
+            commands.AddRange(MultiLineBox.Text.Replace('\r', ' ').Trim().ToLower().Split('\n'));
+            graphics = Graphics.FromImage(OutputBitmap);
+            Parser.ParseAction(graphics, pen, commands);
             MultiLineBox.Clear();
             Refresh();
-            Parser.commands.Clear();
+            commands.Clear();
         }
 
         private void ProcessSingleLine()
         {
-            Parser.commands = new List<string>();
-            Parser.commands.Add(SingleLineBox.Text.Trim().ToLower());
-            SingleLineBox.Clear();
-            Refresh();
-            Parser.commands.Clear();
+            if (SingleLineBox.Text.Trim().ToLower() == "run")
+            {
+                ProcessMultiLine();
+            }
+            else
+            {
+                commands.Add(SingleLineBox.Text.Trim().ToLower());
+                graphics = Graphics.FromImage(OutputBitmap);
+                Parser.ParseAction(graphics, pen, commands);
+                SingleLineBox.Clear();
+                Refresh();
+                commands.Clear();
+            }
+        }
+
+        private void SaveButton_Click(object sender, EventArgs e)
+        {
+            SaveText();
+        }
+
+        private void LoadButton_Click(object sender, EventArgs e)
+        {
+            LoadText();
         }
     }
 }

@@ -17,6 +17,5 @@ namespace DrawingAppASE
             this.x = x;
             this.y = y;
         }
-
     }
 }

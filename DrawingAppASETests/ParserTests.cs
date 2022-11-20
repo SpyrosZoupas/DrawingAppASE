@@ -2,59 +2,64 @@
 using DrawingAppASE;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Drawing;
 
 namespace DrawingAppASE.Tests
 {
-    [TestClass()]
+    [TestClass]
     public class ParserTests
     {
-        [TestMethod()]
-        public void ParseAction_oneMatchingStringLowerCase_returnsCorrectAction()
+        [TestMethod]
+        public void ParseAction_WhenProvidedWithValidCommandAndValidParameters_ThenRunsSuccessfully()
         {
-            var input = new List<string> { "circle" };
-
-            //var result = Parser.ParseAction(input);
-
-            //Assert.AreEqual(Action.Circle, result); what?
+            try
+            {
+                var bitmap = new Bitmap(300, 500);
+                var graphics = Graphics.FromImage(bitmap);
+                var pen = new Pen(Color.Red);
+                var commands = new List<string>() { "circle 50" };
+                Parser.ParseAction(graphics, pen, commands);
+            }
+            catch
+            {
+                Assert.Fail();
+            }
         }
 
-        public void ParseAction_oneMatchingStringUpperCase_returnsCorrectAction()
+        [TestMethod]
+        public void ParseAction_WhenProvidedWithValidCommandAndValidParameters_ThenThrowsInvalidCommandsException()
         {
-            var input = new List<string> { "CIRCLE" };
-
-            //var result = Parser.ParseAction(input);
-
-            //Assert.AreEqual(Action.Circle, result); what?
+            try
+            {
+                var bitmap = new Bitmap(300, 500);
+                var graphics = Graphics.FromImage(bitmap);
+                var pen = new Pen(Color.Red);
+                var commands = new List<string>() { "test 50" };
+                Parser.ParseAction(graphics, pen, commands);
+            }
+            catch (Exception e)
+            {
+                Assert.IsInstanceOfType(e, typeof(ArgumentException));
+                Assert.AreEqual(e.Message, "Invalid command");
+            }
         }
 
-        public void ParseAction_oneMatchingStringMixedCase_returnsCorrectAction()
+        [TestMethod]
+        public void ParseAction_WhenProvidedWithValidCommandAndValidParameters_ThenThrowsInvalidParametersException()
         {
-            var input = new List<string> { "cIrClE" };
-
-            //var result = Parser.ParseAction(input);
-
-            //Assert.AreEqual(Action.Circle, result); what?
-        }
-
-        public void ParseAction_oneMatchingStringTwoNonMatching_returnsCorrectAction()
-        {
-            var input = new List<string> { "circle", "pear", "banana" };
-
-            //var result = Parser.ParseAction(input);
-
-            //Assert.AreEqual(Action.Circle, result); what?
-        }
-
-        public void ParseAction_twoMatchingStrings_returnsFirstAction()
-        {
-            var input = new List<string> { "circle" };
-
-            //var result = Parser.ParseAction(input);
-
-            //Assert.AreEqual(Action.Circle, result); what?
+            try
+            {
+                var bitmap = new Bitmap(300, 500);
+                var graphics = Graphics.FromImage(bitmap);
+                var pen = new Pen(Color.Red);
+                var commands = new List<string>() { "circle test" };
+                Parser.ParseAction(graphics, pen, commands);
+            }
+            catch (Exception e)
+            {
+                Assert.IsInstanceOfType(e, typeof(ArgumentException));
+                Assert.AreEqual(e.Message, "Invalid parameters");
+            }
         }
     }
 }

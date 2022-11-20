@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace DrawingAppASE
 {
-    class Triangle : Shape
+    public class Triangle : Shape
     {
         private int X1 { get; set; }
         private int Y1 { get; set; }
@@ -27,11 +27,26 @@ namespace DrawingAppASE
             Y3 = y3;
         }
 
-        public void Draw(Graphics graphics, Pen pen)
+        public void Draw(Graphics graphics, Pen pen, bool fill)
         {
-            graphics.DrawLine(pen, X1, Y1, X2, Y2);
-            graphics.DrawLine(pen, X2, Y2, X3, Y3);
-            graphics.DrawLine(pen, X3, Y3, X1, Y1);
+            if (!fill)
+            {
+                Draw(graphics, pen);
+            }
+            else
+            {
+                Draw(graphics, new SolidBrush(pen.Color));
+            }
+        }
+
+        private void Draw(Graphics graphics, Pen pen)
+        {
+            graphics.DrawPolygon(pen, new[] { new Point(X1, Y1), new Point(X2, Y2), new Point(X3, Y3) });
+        }
+
+        private void Draw(Graphics graphics, Brush brush)
+        {
+            graphics.FillPolygon(brush, new [] { new Point(X1, Y1), new Point(X2, Y2), new Point(X3, Y3)});
         }
     }
 }
