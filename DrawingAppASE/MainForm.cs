@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
@@ -63,7 +64,34 @@ namespace DrawingAppASE
             {
                 Parser.ParseAction(graphics, pen);
             }
+        }
 
+        private void SaveButton_Click(object sender, EventArgs e)
+        {
+            SaveText();
+        }
+
+        private void LoadButton_Click(object sender, EventArgs e)
+        {
+            LoadText();
+        }
+
+        private void SaveText()
+        {
+            var textToSave = MultiLineBox.Text;
+            var path = "C:\\Save\\test.txt";
+            StreamWriter sw = new StreamWriter(path);
+            sw.WriteLine(textToSave);
+            sw.Close();
+        }
+
+        private void LoadText()
+        {
+            var path = "C:\\Save\\test.txt";
+            StreamReader sw = new StreamReader(path);
+            var loadedText = sw.ReadToEnd();
+            MultiLineBox.Text = loadedText;
+            sw.Close();
         }
 
         private void ProcessMultiLine()
