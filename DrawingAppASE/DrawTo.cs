@@ -7,23 +7,20 @@ using System.Threading.Tasks;
 
 namespace DrawingAppASE
 {
-    public class Square : Rectangle
+    class DrawTo : Shape
     {
-        internal int Size { get; set; }
+        private int X1 { get; set; }
+        private int Y1 { get; set; }
 
-        public Square(int x, int y, int size) : base(x, y, size, size)
+        public DrawTo(int x, int y, int x1, int y1) : base(x, y)
         {
-            Size = size;
+            X1 = x1;
+            Y1 = y1;
         }
 
         public void Draw(Graphics graphics, Pen pen)
         {
-
-        }
-
-        public void DrawTo(Graphics graphics, Pen pen, int x, int y)
-        {
-
+            graphics.DrawLine(pen, x, y, X1, Y1);
         }
     }
 }

@@ -7,16 +7,16 @@ using System.Threading.Tasks;
 
 namespace DrawingAppASE
 {
-    abstract class Shape
+    public abstract class Shape
     {
         protected Color colour;
         protected int x, y;
 
-        public Shape(Color colour, int x, int y)
+        public Shape(int x, int y)
         {
-            this.colour = colour;
             this.x = x;
             this.y = y;
         }
+
     }
 }

@@ -7,15 +7,37 @@ using System.Threading.Tasks;
 
 namespace DrawingAppASE
 {
-    class Rectangle : Shape
+    public class Rectangle : Shape
     {
-        internal int Width {  get; set; }
-        internal int Height { get; set; }
+        private int Width {  get; set; }
+        private int Height { get; set; }
 
-        public Rectangle(Color colour , int x, int y, int width, int height) : base(colour, x, y)
+        public Rectangle(int x, int y, int width, int height) : base(x, y)
         {
             Width = width;
             Height = height;
+        }
+
+        public void Draw(Graphics graphics, Pen pen, bool fill)
+        {
+            if (!fill)
+            {
+                Draw(graphics, pen);
+            }
+            else
+            {
+                Draw(graphics, new SolidBrush(pen.Color));
+            }
+        }
+
+        private void Draw(Graphics graphics, Pen pen)
+        {
+            graphics.DrawRectangle(pen, x, y, Width, Height);
+        }
+
+        private void Draw(Graphics graphics, Brush brush)
+        {
+            graphics.FillRectangle(brush, x, y, Width, Height);
         }
     }
 }

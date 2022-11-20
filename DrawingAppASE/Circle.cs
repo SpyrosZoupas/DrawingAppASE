@@ -7,13 +7,35 @@ using System.Threading.Tasks;
 
 namespace DrawingAppASE
 {
-    class Circle : Shape
+    public class Circle : Shape
     {
-        internal int Radius { get; set; }
+        private int Radius { get; set; }
 
-        public Circle(Color colour, int x, int y, int radius) : base(colour, x, y)
+        public Circle(int x, int y, int radius) : base(x, y)
         {
             Radius = radius;
+        }
+
+        public void Draw(Graphics graphics, Pen pen, bool fill)
+        {
+            if (!fill)
+            {
+                Draw(graphics, pen);
+            }
+            else
+            {
+                Draw(graphics, new SolidBrush(pen.Color));
+            }
+        }
+
+        private void Draw(Graphics graphics, Pen pen)
+        {
+            graphics.DrawEllipse(pen, x, y, Radius, Radius);
+        }
+
+        private void Draw(Graphics graphics, Brush brush)
+        {
+            graphics.FillEllipse(brush, x, y, Radius, Radius);
         }
     }
 }

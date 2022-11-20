@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -14,48 +15,35 @@ namespace DrawingAppASE
 {
     public partial class MainForm : Form
     {
-        readonly Bitmap OutputBitmap;
-        const int xBitMapSize = 506;
-        const int yBitMapSize = 396;
+        private readonly Bitmap OutputBitmap;
+        private const int xBitMapSize = 506;
+        private const int yBitMapSize = 396;
+        private Pen pen;
+        private Graphics graphics;
+       
 
         public MainForm()
         {
             InitializeComponent();
             OutputBitmap = new Bitmap(xBitMapSize, yBitMapSize);
+            pen = new Pen(Color.Red);
         }
 
-        private void MultiLineButton_Click(object sender, EventArgs e)
+        public void MultiLineButton_Click(object sender, EventArgs e)
         {
-
+            ProcessMultiLine();
         }
 
         private void SingleLineButton_Click(object sender, EventArgs e)
         {
-            string commandTyped = SingleLineBox.Text.Trim().ToLower();
-            Pen pen = new Pen(Color.Red);
-            Graphics graphics = Graphics.FromImage(OutputBitmap);
-            switch (commandTyped)
-            {
-                case "line":
-                    graphics.DrawLine(pen, 0, 0, 100, 100);
-                    break;
-                case "square":
-                    graphics.DrawRectangle(pen, 0, 0, 100, 100);
-                    break;
-                case "circle":
-                    graphics.DrawEllipse(pen, 0, 0, 100, 100);
-                    break;
-            }
-
-            SingleLineBox.Clear();
-            Refresh();
+            ProcessSingleLine();
         }
 
         private void MultiLineBox_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Enter)
             {
-                Console.WriteLine("MultiLineKey pressed");
+                //ProcessMultiLine();
             }
         }
 
@@ -63,33 +51,37 @@ namespace DrawingAppASE
         {
             if (e.KeyCode == Keys.Enter)
             {
-                Console.WriteLine("SingleLineKey pressed");
-                string commandTyped = SingleLineBox.Text.Trim().ToLower();
-                Pen pen = new Pen(Color.Red);
-                Graphics graphics = Graphics.FromImage(OutputBitmap);
-                switch (commandTyped)
-                {
-                    case "line":
-                        graphics.DrawLine(pen, 0, 0, 100, 100);
-                        break;
-                    case "square":
-                        graphics.DrawRectangle(pen, 0, 0, 100, 100);
-                        break;
-                    case "circle":
-                        graphics.DrawEllipse(pen, 0, 0, 100, 100);
-                        break;                 
-                }
-
-                SingleLineBox.Clear();
-                Refresh();
+                ProcessSingleLine();
             }
         }
 
         private void paintBox_Paint(object sender, PaintEventArgs e)
         {
-            Graphics graphics = e.Graphics;
+            graphics = e.Graphics;
             graphics.DrawImageUnscaled(OutputBitmap, 0, 0);
-            
+            if (Parser.commands != null)
+            {
+                Parser.ParseAction(graphics, pen);
+            }
+
+        }
+
+        private void ProcessMultiLine()
+        {
+            Parser.commands = new List<string>();
+            Parser.commands.AddRange(MultiLineBox.Text.Replace('\r', ' ').Trim().ToLower().Split('\n'));
+            MultiLineBox.Clear();
+            Refresh();
+            Parser.commands.Clear();
+        }
+
+        private void ProcessSingleLine()
+        {
+            Parser.commands = new List<string>();
+            Parser.commands.Add(SingleLineBox.Text.Trim().ToLower());
+            SingleLineBox.Clear();
+            Refresh();
+            Parser.commands.Clear();
         }
     }
 }

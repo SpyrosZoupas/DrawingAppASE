@@ -5,6 +5,8 @@ VisualStudioVersion = 17.3.32929.385
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DrawingAppASE", "DrawingAppASE\DrawingAppASE.csproj", "{1B1B1519-D561-4A64-8F91-0220C14E505B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DrawingAppASETests", "DrawingAppASETests\DrawingAppASETests.csproj", "{BCAD3F0D-B97A-4B13-9416-4E5AF0C7C14B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{1B1B1519-D561-4A64-8F91-0220C14E505B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1B1B1519-D561-4A64-8F91-0220C14E505B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1B1B1519-D561-4A64-8F91-0220C14E505B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BCAD3F0D-B97A-4B13-9416-4E5AF0C7C14B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BCAD3F0D-B97A-4B13-9416-4E5AF0C7C14B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BCAD3F0D-B97A-4B13-9416-4E5AF0C7C14B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BCAD3F0D-B97A-4B13-9416-4E5AF0C7C14B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

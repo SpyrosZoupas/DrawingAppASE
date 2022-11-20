@@ -16,7 +16,7 @@ namespace DrawingAppASE.Tests
         {
             var input = new List<string> { "circle" };
 
-            var result = Parser.ParseAction(input);
+            //var result = Parser.ParseAction(input);
 
             //Assert.AreEqual(Action.Circle, result); what?
         }
@@ -25,7 +25,7 @@ namespace DrawingAppASE.Tests
         {
             var input = new List<string> { "CIRCLE" };
 
-            var result = Parser.ParseAction(input);
+            //var result = Parser.ParseAction(input);
 
             //Assert.AreEqual(Action.Circle, result); what?
         }
@@ -34,7 +34,7 @@ namespace DrawingAppASE.Tests
         {
             var input = new List<string> { "cIrClE" };
 
-            var result = Parser.ParseAction(input);
+            //var result = Parser.ParseAction(input);
 
             //Assert.AreEqual(Action.Circle, result); what?
         }
@@ -43,7 +43,7 @@ namespace DrawingAppASE.Tests
         {
             var input = new List<string> { "circle", "pear", "banana" };
 
-            var result = Parser.ParseAction(input);
+            //var result = Parser.ParseAction(input);
 
             //Assert.AreEqual(Action.Circle, result); what?
         }
@@ -52,7 +52,7 @@ namespace DrawingAppASE.Tests
         {
             var input = new List<string> { "circle" };
 
-            var result = Parser.ParseAction(input);
+            //var result = Parser.ParseAction(input);
 
             //Assert.AreEqual(Action.Circle, result); what?
         }
