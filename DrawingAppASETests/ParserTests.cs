@@ -70,7 +70,7 @@ namespace DrawingAppASE.Tests
             catch (Exception e)
             {
                 Assert.IsInstanceOfType(e, typeof(ArgumentException));
-                Assert.AreEqual(e.Message, "Parameters have to be integers");
+                Assert.AreEqual(e.Message, "Value does not fall within the expected range.");
             }
         }
     }
