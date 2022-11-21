@@ -18,6 +18,12 @@ namespace DrawingAppASE
             Height = height;
         }
 
+        /// <summary>
+        /// Decides whether to draw or fill a rectangle based on <paramref name="fill"/>
+        /// </summary>
+        /// <param name="graphics"></param>
+        /// <param name="pen"></param>
+        /// <param name="fill"></param>
         public void Draw(Graphics graphics, Pen pen, bool fill)
         {
             if (!fill)
@@ -30,11 +36,21 @@ namespace DrawingAppASE
             }
         }
 
+        /// <summary>
+        /// Draws a rectangle using a pen
+        /// </summary>
+        /// <param name="graphics"></param>
+        /// <param name="pen"></param>
         private void Draw(Graphics graphics, Pen pen)
         {
             graphics.DrawRectangle(pen, x, y, Width, Height);
         }
 
+        /// <summary>
+        /// Draws a rectangle using a brush, fills the shape with colour
+        /// </summary>
+        /// <param name="graphics"></param>
+        /// <param name="brush"></param>
         private void Draw(Graphics graphics, Brush brush)
         {
             graphics.FillRectangle(brush, x, y, Width, Height);

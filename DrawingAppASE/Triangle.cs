@@ -27,6 +27,12 @@ namespace DrawingAppASE
             Y3 = y3;
         }
 
+        /// <summary>
+        /// Decides whether to draw or fill a rectangle based on <paramref name="fill"/>
+        /// </summary>
+        /// <param name="graphics"></param>
+        /// <param name="pen"></param>
+        /// <param name="fill"></param>
         public void Draw(Graphics graphics, Pen pen, bool fill)
         {
             if (!fill)
@@ -39,11 +45,21 @@ namespace DrawingAppASE
             }
         }
 
+        /// <summary>
+        /// Draws a triangle using a pen
+        /// </summary>
+        /// <param name="graphics"></param>
+        /// <param name="pen"></param>
         private void Draw(Graphics graphics, Pen pen)
         {
             graphics.DrawPolygon(pen, new[] { new Point(X1, Y1), new Point(X2, Y2), new Point(X3, Y3) });
         }
 
+        /// <summary>
+        /// Draws a triangle using a brush, fills the shape with colour
+        /// </summary>
+        /// <param name="graphics"></param>
+        /// <param name="brush"></param>
         private void Draw(Graphics graphics, Brush brush)
         {
             graphics.FillPolygon(brush, new [] { new Point(X1, Y1), new Point(X2, Y2), new Point(X3, Y3)});

@@ -5,9 +5,15 @@ using System.Drawing;
 
 namespace DrawingAppASE.Tests
 {
+    /// <summary>
+    /// Unit tests for Triangle class
+    /// </summary>
     [TestClass]
     public class TriangleTests
     {
+        /// <summary>
+        /// testing draw method of Triangle class, when provided with correct parameters method should be called
+        /// </summary>
         [TestMethod]
         public void Draw_WhenProvidedWithGraphicsAndPen_ThenRunsSuccessfully()
         {
@@ -25,6 +31,9 @@ namespace DrawingAppASE.Tests
             }
         }
 
+        /// <summary>
+        /// testing draw method, when graphics or pen parameters are missing should throw appropriate exception
+        /// </summary>
         [TestMethod]
         public void Draw_WhenNotProvidedWithGraphicsAndPen_ThrowsNullReferenceException()
         {

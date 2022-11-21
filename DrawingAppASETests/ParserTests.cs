@@ -6,11 +6,17 @@ using System.Drawing;
 
 namespace DrawingAppASE.Tests
 {
+    /// <summary>
+    /// Unit tests for Parser class
+    /// </summary>
     [TestClass]
     public class ParserTests
     {
+        /// <summary>
+        /// Parse method should run if commands and parameters are valid
+        /// </summary>
         [TestMethod]
-        public void ParseAction_WhenProvidedWithValidCommandAndValidParameters_ThenRunsSuccessfully()
+        public void ParseAction_WhenProvidedWithValidCommandAndValidParameters_RunsSuccessfully()
         {
             try
             {
@@ -26,8 +32,11 @@ namespace DrawingAppASE.Tests
             }
         }
 
+        /// <summary>
+        /// Parse method should throw appropriate exception when invalid command
+        /// </summary>
         [TestMethod]
-        public void ParseAction_WhenProvidedWithValidCommandAndValidParameters_ThenThrowsInvalidCommandsException()
+        public void ParseAction_WhenProvidedWithInvalidCommandAndValidParameters_ThrowsInvalidCommandsException()
         {
             try
             {
@@ -44,8 +53,11 @@ namespace DrawingAppASE.Tests
             }
         }
 
+        /// <summary>
+        /// Parse method should throw appropriate exception when invalid parameter
+        /// </summary>
         [TestMethod]
-        public void ParseAction_WhenProvidedWithValidCommandAndValidParameters_ThenThrowsInvalidParametersException()
+        public void ParseAction_WhenProvidedWithValidCommandAndInvalidParameters_ThrowsInvalidParametersException()
         {
             try
             {
@@ -58,7 +70,7 @@ namespace DrawingAppASE.Tests
             catch (Exception e)
             {
                 Assert.IsInstanceOfType(e, typeof(ArgumentException));
-                Assert.AreEqual(e.Message, "Invalid parameters");
+                Assert.AreEqual(e.Message, "Parameters have to be integers");
             }
         }
     }

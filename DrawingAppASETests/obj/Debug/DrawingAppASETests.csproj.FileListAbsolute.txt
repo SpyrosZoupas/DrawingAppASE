@@ -16,3 +16,13 @@ C:\Users\spiro\source\repos\DrawingAppASE\DrawingAppASETests\obj\Debug\DrawingAp
 C:\Users\spiro\source\repos\DrawingAppASE\DrawingAppASETests\obj\Debug\DrawingAppASETests.csproj.CopyComplete
 C:\Users\spiro\source\repos\DrawingAppASE\DrawingAppASETests\obj\Debug\DrawingAppASETests.dll
 C:\Users\spiro\source\repos\DrawingAppASE\DrawingAppASETests\obj\Debug\DrawingAppASETests.pdb
+C:\Users\spiro\source\repos\DrawingAppASE\DrawingAppASETests\bin\Debug\Castle.Core.dll
+C:\Users\spiro\source\repos\DrawingAppASE\DrawingAppASETests\bin\Debug\Moq.dll
+C:\Users\spiro\source\repos\DrawingAppASE\DrawingAppASETests\bin\Debug\System.Runtime.CompilerServices.Unsafe.dll
+C:\Users\spiro\source\repos\DrawingAppASE\DrawingAppASETests\bin\Debug\System.Threading.Tasks.Extensions.dll
+C:\Users\spiro\source\repos\DrawingAppASE\DrawingAppASETests\bin\Debug\System.ValueTuple.dll
+C:\Users\spiro\source\repos\DrawingAppASE\DrawingAppASETests\bin\Debug\Castle.Core.xml
+C:\Users\spiro\source\repos\DrawingAppASE\DrawingAppASETests\bin\Debug\Moq.xml
+C:\Users\spiro\source\repos\DrawingAppASE\DrawingAppASETests\bin\Debug\System.Runtime.CompilerServices.Unsafe.xml
+C:\Users\spiro\source\repos\DrawingAppASE\DrawingAppASETests\bin\Debug\System.Threading.Tasks.Extensions.xml
+C:\Users\spiro\source\repos\DrawingAppASE\DrawingAppASETests\bin\Debug\System.ValueTuple.xml

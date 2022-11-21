@@ -68,7 +68,6 @@
             this.MultiLineBox.Name = "MultiLineBox";
             this.MultiLineBox.Size = new System.Drawing.Size(338, 396);
             this.MultiLineBox.TabIndex = 2;
-            this.MultiLineBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.MultiLineBox_KeyDown);
             // 
             // SingleLineBox
             // 
@@ -114,7 +113,7 @@
             // MainForm
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
-            this.ClientSize = new System.Drawing.Size(907, 492);
+            this.ClientSize = new System.Drawing.Size(950, 518);
             this.Controls.Add(this.LoadButton);
             this.Controls.Add(this.SaveButton);
             this.Controls.Add(this.paintBox);
