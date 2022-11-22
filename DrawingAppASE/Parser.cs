@@ -14,7 +14,6 @@ namespace DrawingAppASE
         private static int x = 0;
         private static int y = 0;
         private static bool fill = false;
-        private static List<int> parametersInt = new List<int>();
 
         /// <summary>
         /// ParseAction method parses each line of commands from <paramref name="commands"/>
@@ -177,7 +176,7 @@ namespace DrawingAppASE
             } 
             else
             {
-                throw new ArgumentException();
+                throw new FormatException();
             }
         }
     }

@@ -69,8 +69,8 @@ namespace DrawingAppASE.Tests
             }
             catch (Exception e)
             {
-                Assert.IsInstanceOfType(e, typeof(ArgumentException));
-                Assert.AreEqual(e.Message, "Value does not fall within the expected range.");
+                Assert.IsInstanceOfType(e, typeof(FormatException));
+                Assert.AreEqual(e.Message, "One of the identified items was in an invalid format.");
             }
         }
     }

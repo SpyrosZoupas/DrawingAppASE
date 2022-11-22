@@ -76,10 +76,10 @@ namespace DrawingAppASE
         private void LoadText()
         {
             var path = "C:\\Save\\program.txt";
-            StreamReader sw = new StreamReader(path);
-            var loadedText = sw.ReadToEnd();
+            StreamReader sr = new StreamReader(path);
+            var loadedText = sr.ReadToEnd();
             MultiLineBox.Text = loadedText;
-            sw.Close();
+            sr.Close();
         }
 
         /// <summary>
@@ -106,7 +106,7 @@ namespace DrawingAppASE
             if (SingleLineBox.Text.Trim().ToLower() == "run")
             {
                 ProcessMultiLine();
-                SingleLineBox.Clear();
+                
             }
             else
             {
@@ -115,14 +115,14 @@ namespace DrawingAppASE
                 try
                 {
                     Parser.ParseAction(graphics, pen, commands);
-                } catch (ArgumentException)
+                } catch (FormatException)
                 {
                     System.Windows.Forms.MessageBox.Show("ERROR: Parameter has to be an integer");
                 }
-                SingleLineBox.Clear();
                 Refresh();
                 commands.Clear();
             }
+            SingleLineBox.Clear();
         }
 
         private void SaveButton_Click(object sender, EventArgs e)
