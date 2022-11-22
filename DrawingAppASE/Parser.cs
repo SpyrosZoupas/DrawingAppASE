@@ -29,8 +29,7 @@ namespace DrawingAppASE
             foreach (var input in commands)
             {
                 var command = input.Split(' ')[0];
-
-                if (input.Split(' ').Length == 1)
+                if (input.Trim().Split(' ').Length == 1)
                 {
                     switch (command)
                     {

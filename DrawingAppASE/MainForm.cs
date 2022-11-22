@@ -91,7 +91,14 @@ namespace DrawingAppASE
         {
             commands.AddRange(MultiLineBox.Text.Replace('\r', ' ').Trim().ToLower().Split('\n'));
             graphics = Graphics.FromImage(OutputBitmap);
-            Parser.ParseAction(graphics, pen, commands);
+            try
+            {
+                Parser.ParseAction(graphics, pen, commands);
+            }
+            catch (FormatException)
+            {
+                System.Windows.Forms.MessageBox.Show("ERROR: Parameter has to be an integer");
+            }
             Refresh();
             commands.Clear();
         }
