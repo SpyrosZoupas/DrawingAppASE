@@ -15,6 +15,7 @@ namespace DrawingAppASE
         private static int x = 0;
         private static int y = 0;
         private static bool fill = false;
+        private static ShapeFactory shapeFactory = new ShapeFactory();
         /// <summary>
         /// ParseAction method parses each line of commands from <paramref name="commands"/>
         /// splits each line between command and parameters then splits parameters between them
@@ -28,6 +29,8 @@ namespace DrawingAppASE
         {
             foreach (var input in commands)
             {
+                List<int> paramList = new List<int> {x,y};
+
                 var command = input.Split(' ')[0];
 
                 if (input.Trim().Split(' ').Length == 1)
@@ -131,8 +134,9 @@ namespace DrawingAppASE
                                 break;
                             case "circle":
                                 if (parameters.Length == 1)
-                                {                                   
-                                    var circle = new Circle(x, y, Parser.ParseInt(parameters[0]));
+                                {
+                                    paramList.Add(Parser.ParseInt(parameters[0]));
+                                    var circle = shapeFactory.CreateShape(command,paramList);
                                     circle.Draw(graphics, pen, fill);
                                 }
                                 else
@@ -143,7 +147,9 @@ namespace DrawingAppASE
                             case "rectangle":
                                 if (parameters.Length == 2)
                                 {
-                                    var rectangle = new Rectangle(x, y, Parser.ParseInt(parameters[0]), Parser.ParseInt(parameters[1]));
+                                    paramList.Add(Parser.ParseInt(parameters[0]));
+                                    paramList.Add(Parser.ParseInt(parameters[1]));
+                                    var rectangle = shapeFactory.CreateShape(command, paramList);
                                     rectangle.Draw(graphics, pen, fill);
                                 }
                                 else
@@ -154,7 +160,13 @@ namespace DrawingAppASE
                             case "triangle":
                                 if (parameters.Length == 6)
                                 {
-                                    var triangle = new Triangle(x, y, Parser.ParseInt(parameters[0]), Parser.ParseInt(parameters[1]), Parser.ParseInt(parameters[2]), Parser.ParseInt(parameters[3]), Parser.ParseInt(parameters[4]), Parser.ParseInt(parameters[5]));
+                                    var paramCounter = 0;
+                                    foreach (var param in parameters)
+                                    {
+                                        paramList.Add(Parser.ParseInt(parameters[paramCounter]));
+                                        paramCounter++;
+                                    }
+                                    var triangle = shapeFactory.CreateShape(command, paramList);
                                     triangle.Draw(graphics, pen, fill);
                                 }
                                 else
