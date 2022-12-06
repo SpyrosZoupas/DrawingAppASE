@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Drawing;
 using System.Drawing.Text;
 using System.Windows.Forms;
@@ -15,7 +16,9 @@ namespace DrawingAppASE
         private static int x = 0;
         private static int y = 0;
         private static bool fill = false;
+        private static bool executeCommands = true;
         private static ShapeFactory shapeFactory = new ShapeFactory();
+        private static DataTable dataTable = new DataTable();
         /// <summary>
         /// ParseAction method parses each line of commands from <paramref name="commands"/>
         /// splits each line between command and parameters then splits parameters between them
@@ -28,155 +31,176 @@ namespace DrawingAppASE
         public static void ParseAction(Graphics graphics, Pen pen, IEnumerable<string> commands)
         {
             foreach (var input in commands)
-            {
-                List<int> paramList = new List<int> {x,y};
+            {                
 
                 var command = input.Split(' ')[0];
 
-                if (input.Trim().Split(' ').Length == 1)
+                //change it so variables can be used in if conditions
+                if (command == "if")
                 {
-                    switch (command)
+
+                    if (!Convert.ToBoolean(dataTable.Compute(input.Split(' ')[1], "")))
                     {
-                        case "clear":
-                            graphics.Clear(Color.Gray);
-                            break;
-                        case "reset":
-                            x = 0;
-                            y = 0;
-                            break;
-                        default:
-                            System.Windows.Forms.MessageBox.Show("ERROR: Invalid command");
-                            break;
+                        executeCommands = false;
                     }
                 }
+                else if (command == "endif")
+                {
+                    executeCommands = true;
+                }
                 else
-                {                   
-                    var parameters = input.Split(' ')[1].Split(',');
-
-                    if (parameters[0] == "=")
+                {
+                    if (executeCommands == true)
                     {
-                        var value = Convert.ToInt32(input.Split(' ')[2]);
-                        var variable = new Variable(command, value);
-                    }
-                    else
-                    {
-
-                        switch (command)
+                        if (input.Trim().Split(' ').Length == 1)
                         {
-                            case "moveto":
-                                if (parameters.Length == 2)
+                            switch (command)
+                            {
+                                case "clear":
+                                    graphics.Clear(Color.Gray);
+                                    break;
+                                case "reset":
+                                    x = 0;
+                                    y = 0;
+                                    break;
+                                default:
+                                    System.Windows.Forms.MessageBox.Show("ERROR: Invalid command");
+                                    break;
+                            }
+                        }
+                        else
+                        {
+                            List<int> paramList = new List<int> { x, y };
+
+                            var parameters = input.Split(' ')[1].Split(',');
+
+                            if (parameters[0] == "=")
+                            {
+                                var value = Convert.ToInt32(input.Split(' ')[2]);
+                                var variable = new Variable(command, value);
+                            }
+                            else
+                            {
+
+                                switch (command)
                                 {
-                                    x = Parser.ParseInt(parameters[0]);
-                                    y = Parser.ParseInt(parameters[1]);
+                                    case "moveto":
+                                        if (parameters.Length == 2)
+                                        {
+                                            x = Parser.ParseInt(parameters[0]);
+                                            y = Parser.ParseInt(parameters[1]);
+                                        }
+                                        else
+                                        {
+                                            System.Windows.Forms.MessageBox.Show("ERROR: Wrong numbers of parameters. Parameters needed = 2");
+                                        }
+                                        break;
+                                    case "drawto":
+                                        if (parameters.Length == 2)
+                                        {
+                                            var drawTo = new DrawTo(x, y, Parser.ParseInt(parameters[0]), Parser.ParseInt(parameters[1]));
+                                            drawTo.Draw(graphics, pen, fill);
+                                        }
+                                        else
+                                        {
+                                            System.Windows.Forms.MessageBox.Show("ERROR: Wrong numbers of parameters. Parameters needed = 2");
+                                        }
+                                        break;
+                                    case "pen":
+                                        if (parameters.Length == 1)
+                                        {
+                                            switch (parameters[0])
+                                            {
+                                                case "green":
+                                                    pen.Color = Color.Green;
+                                                    break;
+                                                case "blue":
+                                                    pen.Color = Color.Blue;
+                                                    break;
+                                                case "red":
+                                                    pen.Color = Color.Red;
+                                                    break;
+                                                case "yellow":
+                                                    pen.Color = Color.Yellow;
+                                                    break;
+                                                default:
+                                                    System.Windows.Forms.MessageBox.Show("ERROR: Please choose a valid colour");
+                                                    break;
+                                            }
+                                        }
+                                        else
+                                        {
+                                            System.Windows.Forms.MessageBox.Show("ERROR: Wrong numbers of parameters. Parameters needed = 1");
+                                        }
+                                        break;
+                                    case "fill":
+                                        if (parameters.Length == 1)
+                                        {
+                                            if (parameters[0] == "on")
+                                            {
+                                                fill = true;
+                                            }
+                                            else if (parameters[0] == "off")
+                                            {
+                                                fill = false;
+                                            }
+                                            else
+                                            {
+                                                System.Windows.Forms.MessageBox.Show("ERROR: fill command only accepts 'on' or 'off' as parameters");
+                                            }
+                                        }
+                                        else
+                                        {
+                                            System.Windows.Forms.MessageBox.Show("ERROR: Wrong numbers of parameters. Parameters needed = 1");
+                                        }
+                                        break;
+                                    case "circle":
+                                        if (parameters.Length == 1)
+                                        {
+                                            paramList.Add(Parser.ParseInt(parameters[0]));
+                                            var circle = shapeFactory.CreateShape(command, paramList);
+                                            circle.Draw(graphics, pen, fill);
+                                        }
+                                        else
+                                        {
+                                            System.Windows.Forms.MessageBox.Show("ERROR: Wrong numbers of parameters. Parameters needed = 1");
+                                        }
+                                        break;
+                                    case "rectangle":
+                                        if (parameters.Length == 2)
+                                        {
+                                            paramList.Add(Parser.ParseInt(parameters[0]));
+                                            paramList.Add(Parser.ParseInt(parameters[1]));
+                                            var rectangle = shapeFactory.CreateShape(command, paramList);
+                                            rectangle.Draw(graphics, pen, fill);
+                                        }
+                                        else
+                                        {
+                                            System.Windows.Forms.MessageBox.Show("ERROR: Wrong numbers of parameters. Parameters needed = 2");
+                                        }
+                                        break;
+                                    case "triangle":
+                                        if (parameters.Length == 6)
+                                        {
+                                            var paramCounter = 0;
+                                            foreach (var param in parameters)
+                                            {
+                                                paramList.Add(Parser.ParseInt(parameters[paramCounter]));
+                                                paramCounter++;
+                                            }
+                                            var triangle = shapeFactory.CreateShape(command, paramList);
+                                            triangle.Draw(graphics, pen, fill);
+                                        }
+                                        else
+                                        {
+                                            System.Windows.Forms.MessageBox.Show("ERROR: Wrong numbers of parameters. Parameters needed = 6");
+                                        }
+                                        break;
+                                    default:
+                                        System.Windows.Forms.MessageBox.Show("ERROR: Invalid command");
+                                        break;
                                 }
-                                else
-                                {
-                                    System.Windows.Forms.MessageBox.Show("ERROR: Wrong numbers of parameters. Parameters needed = 2");
-                                }
-                                break;
-                            case "drawto":
-                                if (parameters.Length == 2)
-                                {
-                                    var drawTo = new DrawTo(x, y, Parser.ParseInt(parameters[0]), Parser.ParseInt(parameters[1]));
-                                    drawTo.Draw(graphics, pen, fill);
-                                }
-                                else
-                                {
-                                    System.Windows.Forms.MessageBox.Show("ERROR: Wrong numbers of parameters. Parameters needed = 2");
-                                }
-                                break;
-                            case "pen":
-                                if (parameters.Length == 1)
-                                {
-                                    switch (parameters[0])
-                                    {
-                                        case "green":
-                                            pen.Color = Color.Green;
-                                            break;
-                                        case "blue":
-                                            pen.Color = Color.Blue;
-                                            break;
-                                        case "red":
-                                            pen.Color = Color.Red;
-                                            break;
-                                        case "yellow":
-                                            pen.Color = Color.Yellow;
-                                            break;
-                                        default:
-                                            break;
-                                    }
-                                }
-                                else
-                                {
-                                    System.Windows.Forms.MessageBox.Show("ERROR: Wrong numbers of parameters. Parameters needed = 1");
-                                }
-                                break;
-                            case "fill":
-                                if (parameters.Length == 1)
-                                {
-                                    if (parameters[0] == "on")
-                                    {
-                                        fill = true;
-                                    }
-                                    else if (parameters[0] == "off")
-                                    {
-                                        fill = false;
-                                    }
-                                    else
-                                    {
-                                        System.Windows.Forms.MessageBox.Show("ERROR: fill command only accepts 'on' or 'off' as parameters");
-                                    }
-                                }
-                                else
-                                {
-                                    System.Windows.Forms.MessageBox.Show("ERROR: Wrong numbers of parameters. Parameters needed = 1");
-                                }
-                                break;
-                            case "circle":
-                                if (parameters.Length == 1)
-                                {
-                                    paramList.Add(Parser.ParseInt(parameters[0]));
-                                    var circle = shapeFactory.CreateShape(command,paramList);
-                                    circle.Draw(graphics, pen, fill);
-                                }
-                                else
-                                {
-                                    System.Windows.Forms.MessageBox.Show("ERROR: Wrong numbers of parameters. Parameters needed = 1");
-                                }
-                                break;
-                            case "rectangle":
-                                if (parameters.Length == 2)
-                                {
-                                    paramList.Add(Parser.ParseInt(parameters[0]));
-                                    paramList.Add(Parser.ParseInt(parameters[1]));
-                                    var rectangle = shapeFactory.CreateShape(command, paramList);
-                                    rectangle.Draw(graphics, pen, fill);
-                                }
-                                else
-                                {
-                                    System.Windows.Forms.MessageBox.Show("ERROR: Wrong numbers of parameters. Parameters needed = 2");
-                                }
-                                break;
-                            case "triangle":
-                                if (parameters.Length == 6)
-                                {
-                                    var paramCounter = 0;
-                                    foreach (var param in parameters)
-                                    {
-                                        paramList.Add(Parser.ParseInt(parameters[paramCounter]));
-                                        paramCounter++;
-                                    }
-                                    var triangle = shapeFactory.CreateShape(command, paramList);
-                                    triangle.Draw(graphics, pen, fill);
-                                }
-                                else
-                                {
-                                    System.Windows.Forms.MessageBox.Show("ERROR: Wrong numbers of parameters. Parameters needed = 6");
-                                }
-                                break;
-                            default:
-                                System.Windows.Forms.MessageBox.Show("ERROR: Invalid command");
-                                break;
+                            }
                         }
                     }
                 }
