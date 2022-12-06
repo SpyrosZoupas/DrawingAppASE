@@ -23,7 +23,7 @@ namespace DrawingAppASE
         /// </summary>
         /// <param name="graphics"></param>
         /// <param name="pen"></param>
-        public void Draw(Graphics graphics, Pen pen)
+        public override void Draw(Graphics graphics, Pen pen, bool fill)
         {
             graphics.DrawLine(pen, x, y, X1, Y1);
         }

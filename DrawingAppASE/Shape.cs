@@ -17,5 +17,7 @@ namespace DrawingAppASE
             this.x = x;
             this.y = y;
         }
+
+        abstract public void Draw(Graphics g, Pen pen, bool fill);
     }
 }

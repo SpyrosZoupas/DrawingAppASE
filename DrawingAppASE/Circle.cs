@@ -22,7 +22,7 @@ namespace DrawingAppASE
         /// <param name="graphics"></param>
         /// <param name="pen"></param>
         /// <param name="fill"></param>
-        public void Draw(Graphics graphics, Pen pen, bool fill)
+        public override void Draw(Graphics graphics, Pen pen, bool fill)
         {
             if (!fill)
             {

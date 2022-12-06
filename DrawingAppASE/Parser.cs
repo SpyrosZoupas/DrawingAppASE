@@ -15,8 +15,6 @@ namespace DrawingAppASE
         private static int x = 0;
         private static int y = 0;
         private static bool fill = false;
-        //private static Dictionary<string, int> variables = new Dictionary<string, int>();
-
         /// <summary>
         /// ParseAction method parses each line of commands from <paramref name="commands"/>
         /// splits each line between command and parameters then splits parameters between them
@@ -77,7 +75,7 @@ namespace DrawingAppASE
                                 if (parameters.Length == 2)
                                 {
                                     var drawTo = new DrawTo(x, y, Parser.ParseInt(parameters[0]), Parser.ParseInt(parameters[1]));
-                                    drawTo.Draw(graphics, pen);
+                                    drawTo.Draw(graphics, pen, fill);
                                 }
                                 else
                                 {
@@ -133,7 +131,7 @@ namespace DrawingAppASE
                                 break;
                             case "circle":
                                 if (parameters.Length == 1)
-                                {
+                                {                                   
                                     var circle = new Circle(x, y, Parser.ParseInt(parameters[0]));
                                     circle.Draw(graphics, pen, fill);
                                 }
