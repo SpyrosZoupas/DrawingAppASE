@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Data;
 using System.Drawing;
 using System.Drawing.Text;
+using System.Net;
+using System.Reflection;
 using System.Windows.Forms;
 
 namespace DrawingAppASE
@@ -20,6 +22,10 @@ namespace DrawingAppASE
         private static bool insideMethod = false;
         private static ShapeFactory shapeFactory = new ShapeFactory();
         private static DataTable dataTable = new DataTable();
+        private static List<string> methodCommands = new List<string>();
+        private static Dictionary<string, string[]> methods = new Dictionary<string, string[]>();
+        private static List<string> methodParameters = new List<string>();
+
         /// <summary>
         /// ParseAction method parses each line of commands from <paramref name="commands"/>
         /// splits each line between command and parameters then splits parameters between them
@@ -40,10 +46,12 @@ namespace DrawingAppASE
 
                 switch (command)
                 {
-                    case "method":
+                    case "method":                       
                         ParseMethod(input, command);
                         break;
                     case "endmethod":
+                        insideMethod = false;
+                        executeCommands = true;
                         break;
                     case "if":
                         if (!Convert.ToBoolean(dataTable.Compute(input.Split(' ')[1], "")))
@@ -55,7 +63,14 @@ namespace DrawingAppASE
                         executeCommands = true;
                         break;
                     default:
-                        ParseCommand(graphics, pen, input, command);
+                        if (!insideMethod)
+                        {
+                            ParseCommand(graphics, pen, input, command);
+                        }
+                        else
+                        {
+                            methodCommands.Add(input);
+                        }
                         break;
                 }                                                             
             }
@@ -77,7 +92,15 @@ namespace DrawingAppASE
                             y = 0;
                             break;
                         default:
-                            System.Windows.Forms.MessageBox.Show("ERROR: Invalid command");
+                            if (methods.ContainsKey(input.Split('(')[0]))
+                            {
+                                ParseMethod(input,command);
+                                ParseAction(graphics, pen, methodCommands);
+                            }
+                            else
+                            {
+                                System.Windows.Forms.MessageBox.Show("ERROR: Invalid command");
+                            }
                             break;
                     }
                 }
@@ -209,7 +232,7 @@ namespace DrawingAppASE
                                     System.Windows.Forms.MessageBox.Show("ERROR: Wrong numbers of parameters. Parameters needed = 6");
                                 }
                                 break;
-                            default:
+                            default:                              
                                 System.Windows.Forms.MessageBox.Show("ERROR: Invalid command");
                                 break;
                         }
@@ -220,7 +243,37 @@ namespace DrawingAppASE
 
         public static void ParseMethod(string input, string command)
         {
-
+            if (command == "method")
+            {
+                var methodName = input.Split(' ')[1].Split('(')[0];
+                var parameters = input.Split(' ')[1].Split('(')[1].Split(')')[0].Split(',');
+                if (!methods.ContainsKey(methodName))
+                {
+                    methods.Add(key: methodName, value: parameters);
+                    insideMethod = true;
+                    executeCommands = false;
+                    foreach (var param in parameters)
+                    {
+                        var methodVariable = new Variable(param, 0);
+                        methodParameters.Add(param);
+                    }
+                }
+                else
+                {
+                    System.Windows.Forms.MessageBox.Show("ERROR: A method with that name already exists");
+                }
+            } 
+            else
+            {
+                var methodName = input.Split('(')[0];
+                var parameters = input.Split('(')[1].Split(')')[0].Split(',');
+                int counter = 0;
+                foreach (var param in parameters)
+                {
+                    var methodVariable = new Variable(methodParameters[counter], Parser.ParseInt(param));
+                    counter++;
+                }
+            }
         }
 
         /// <summary>
@@ -242,8 +295,6 @@ namespace DrawingAppASE
             {
                 throw new FormatException();
             }
-        }
-
-       
+        }      
     }
 }
