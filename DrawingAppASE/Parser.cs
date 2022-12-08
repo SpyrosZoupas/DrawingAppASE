@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Drawing;
 using System.Drawing.Text;
+using System.Linq;
 using System.Net;
 using System.Reflection;
 using System.Windows.Forms;
@@ -17,14 +18,19 @@ namespace DrawingAppASE
     {
         private static int x = 0;
         private static int y = 0;
+        private static int iterations;
+        private static int loopCounter = 0;
+        private static int loopSize = 0;
         private static bool fill = false;
         private static bool executeCommands = true;
         private static bool insideMethod = false;
+        private static bool insideLoop = false;
         private static ShapeFactory shapeFactory = new ShapeFactory();
         private static DataTable dataTable = new DataTable();
         private static List<string> methodCommands = new List<string>();
         private static Dictionary<string, string[]> methods = new Dictionary<string, string[]>();
         private static List<string> methodParameters = new List<string>();
+        private static List<string> loopCommands = new List<string>();
 
         /// <summary>
         /// ParseAction method parses each line of commands from <paramref name="commands"/>
@@ -44,6 +50,12 @@ namespace DrawingAppASE
 
                 //change it so variables can be used in if conditions
 
+                if (insideLoop == true)
+                {
+                    //loopSize++;
+                    loopCommands.Add(input);
+                }
+
                 switch (command)
                 {
                     case "method":                       
@@ -52,6 +64,18 @@ namespace DrawingAppASE
                     case "endmethod":
                         insideMethod = false;
                         executeCommands = true;
+                        break;
+                    case "loop":
+                        insideLoop = true;
+                        iterations = Parser.ParseInt(input.Split(' ')[1]);                       
+                        break;
+                    case "endloop":
+                        insideLoop = false;
+                        loopCounter++;
+                        if (loopCounter < iterations)
+                        {
+                            ParseAction(graphics, pen, loopCommands);
+                        }
                         break;
                     case "if":
                         if (!Convert.ToBoolean(dataTable.Compute(input.Split(' ')[1], "")))
@@ -72,7 +96,9 @@ namespace DrawingAppASE
                             methodCommands.Add(input);
                         }
                         break;
-                }                                                             
+                }  
+                
+                
             }
         }
 
