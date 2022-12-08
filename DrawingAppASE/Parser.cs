@@ -6,6 +6,8 @@ using System.Drawing.Text;
 using System.Linq;
 using System.Net;
 using System.Reflection;
+using System.Runtime.CompilerServices;
+using System.Text;
 using System.Windows.Forms;
 
 namespace DrawingAppASE
@@ -52,7 +54,6 @@ namespace DrawingAppASE
 
                 if (insideLoop == true)
                 {
-                    //loopSize++;
                     loopCommands.Add(input);
                 }
 
@@ -138,8 +139,21 @@ namespace DrawingAppASE
 
                     if (parameters[0] == "=")
                     {
-                        var value = Convert.ToInt32(input.Split(' ')[2]);
-                        var variable = new Variable(command, value);
+                        //KeyValuePair<string, int> test
+                        //var value = Convert.ToInt32(input.Split(' ')[2]);
+                        var expression = input.Split('=')[1].Trim();
+                        StringBuilder builder = new StringBuilder(expression);
+                        var counter = 0;
+                        foreach (KeyValuePair<string, int> test in Variable.variables)
+                        {
+                            if (expression.Contains(test.Key))
+                            {
+                                builder.Replace(test.Key, Convert.ToString(test.Value));
+                            }
+                        }
+                        string newExpression = builder.ToString();
+                        var value = dataTable.Compute(newExpression, "");
+                        var variable = new Variable(command, Convert.ToInt32(value));
                     }
                     else
                     {
