@@ -67,7 +67,8 @@ namespace DrawingAppASE
         public static void ParseAction(Graphics graphics, Pen pen, IEnumerable<string> commands)
         {
             lineCounter = 1;
-            foreach(var input in commands)
+            syntaxCorrect = true;
+            foreach (var input in commands)
             {
                 command = input.Split(' ')[0];
                 if(!CheckSyntax(graphics,pen,commands,input))
@@ -86,7 +87,7 @@ namespace DrawingAppASE
             foreach (var input in commands)
             {                
 
-                var command = input.Split(' ')[0];
+                command = input.Split(' ')[0];
 
                 //change it so variables can be used in if conditions
 
@@ -142,7 +143,8 @@ namespace DrawingAppASE
         }
 
         public static bool CheckSyntax(Graphics graphics, Pen pen, IEnumerable<string> commands, string input)
-        {            
+        {
+
             if (input.Split(' ').Count() > 1)
             {
                 if (input.Split(' ')[1] == "=")
@@ -157,30 +159,49 @@ namespace DrawingAppASE
                 return false;
             }
 
-            if (command == "pen" || command == "fill" || command == "circle")
+            if (command == "reset" || command == "clear")
             {
-                if (input.Split(' ')[1].Split(',').Count() != 1)
+                if (input.Trim().Split(' ').Length > 1)
                 {
-                    System.Windows.Forms.MessageBox.Show("ERROR: Wrong number of parameters. Parameters for command needed: 1");
+                    System.Windows.Forms.MessageBox.Show("ERROR: Wrong number of parameters. Parameters for command needed: 0");
                     return false;
                 }
             }
-            if (command == "moveto" || command == "drawto" || command == "rectangle")
+
+            if (input.Trim().Split(' ').Length != 1)
             {
-                if (input.Split(' ')[1].Split(',').Count() != 2)
+                if (command == "pen" || command == "fill" || command == "circle")
                 {
-                    System.Windows.Forms.MessageBox.Show("ERROR: Wrong number of parameters. Parameters for command needed: 2");
-                    return false;
+                    if (input.Split(' ')[1].Split(',').Length != 1)
+                    {
+                        System.Windows.Forms.MessageBox.Show("ERROR: Wrong number of parameters. Parameters for command needed: 1");
+                        return false;
+                    }
                 }
-            }
-            if (command == "triangle")
+                if (command == "moveto" || command == "drawto" || command == "rectangle")
+                {
+                    if (input.Split(' ')[1].Split(',').Count() != 2)
+                    {
+                        System.Windows.Forms.MessageBox.Show("ERROR: Wrong number of parameters. Parameters for command needed: 2");
+                        return false;
+                    }
+                }
+                if (command == "triangle")
+                {
+                    if (input.Split(' ')[1].Split(',').Count() != 6)
+                    {
+                        System.Windows.Forms.MessageBox.Show("ERROR: Wrong number of parameters. Parameters for command needed: 6");
+                        return false;
+                    }
+                }
+            } 
+            
+            if (input.Trim().Split(' ').Length == 1 & command != "reset" & command != "clear")
             {
-                if (input.Split(' ')[1].Split(',').Count() != 6)
-                {
-                    System.Windows.Forms.MessageBox.Show("ERROR: Wrong number of parameters. Parameters for command needed: 6");
-                    return false;
-                }
+                System.Windows.Forms.MessageBox.Show("ERROR: Command needs parameters");
+                return false;
             }
+
 
             return true;                    
         }
@@ -225,7 +246,6 @@ namespace DrawingAppASE
                         //var value = Convert.ToInt32(input.Split(' ')[2]);
                         var expression = input.Split('=')[1].Trim();
                         StringBuilder builder = new StringBuilder(expression);
-                        var counter = 0;
                         foreach (KeyValuePair<string, int> test in Variable.variables)
                         {
                             if (expression.Contains(test.Key))
