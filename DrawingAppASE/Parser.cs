@@ -25,6 +25,7 @@ namespace DrawingAppASE
         private static int loopSize = 0;
         private static int lineCounter = 1;
         private static string command;
+        private static string nameOfMethod;
         private static bool fill = false;
         private static bool executeCommands = true;
         private static bool insideMethod = false;
@@ -68,6 +69,7 @@ namespace DrawingAppASE
         {
             lineCounter = 1;
             syntaxCorrect = true;
+            methods.Clear();
             foreach (var input in commands)
             {
                 command = input.Split(' ')[0];
@@ -196,12 +198,21 @@ namespace DrawingAppASE
                 }
             } 
             
-            if (input.Trim().Split(' ').Length == 1 & command != "reset" & command != "clear")
+            if (input.Trim().Split(' ').Length == 1 & command != "reset" & command != "clear" & command != "endmethod" & !commandsList.Contains(command.Split('(')[0]))
             {
                 System.Windows.Forms.MessageBox.Show("ERROR: Command needs parameters");
                 return false;
             }
 
+            if (command == "method")
+            {
+                nameOfMethod = input.Split(' ')[1].Split('(')[0];
+            }
+
+            if (command == "endmethod")
+            {
+                commandsList.Add(nameOfMethod);
+            }
 
             return true;                    
         }
@@ -391,7 +402,6 @@ namespace DrawingAppASE
                 var parameters = input.Split(' ')[1].Split('(')[1].Split(')')[0].Split(',');
                 if (!methods.ContainsKey(methodName))
                 {
-                    commandsList.Add(methodName);
                     methods.Add(key: methodName, value: parameters);
                     insideMethod = true;
                     executeCommands = false;
