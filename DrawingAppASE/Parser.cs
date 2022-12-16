@@ -23,16 +23,37 @@ namespace DrawingAppASE
         private static int iterations;
         private static int loopCounter = 0;
         private static int loopSize = 0;
+        private static int lineCounter = 1;
+        private static string command;
         private static bool fill = false;
         private static bool executeCommands = true;
         private static bool insideMethod = false;
         private static bool insideLoop = false;
+        private static bool syntaxCorrect = true;
         private static ShapeFactory shapeFactory = new ShapeFactory();
         private static DataTable dataTable = new DataTable();
         private static List<string> methodCommands = new List<string>();
         private static Dictionary<string, string[]> methods = new Dictionary<string, string[]>();
         private static List<string> methodParameters = new List<string>();
         private static List<string> loopCommands = new List<string>();
+        private static List<string> commandsList = new List<string>()
+        {
+            "method",
+            "endmethod",
+            "loop",
+            "endloop",
+            "if",
+            "endif",
+            "clear",
+            "reset",
+            "moveto",
+            "drawto",
+            "pen",
+            "fill",
+            "circle",
+            "rectangle",
+            "triangle"
+        };
 
         /// <summary>
         /// ParseAction method parses each line of commands from <paramref name="commands"/>
@@ -45,6 +66,23 @@ namespace DrawingAppASE
         /// <exception cref="ArgumentException"></exception>
         public static void ParseAction(Graphics graphics, Pen pen, IEnumerable<string> commands)
         {
+            lineCounter = 1;
+            foreach(var input in commands)
+            {
+                command = input.Split(' ')[0];
+                if(!CheckSyntax(graphics,pen,commands,input))
+                {
+                    syntaxCorrect = false;
+                    System.Windows.Forms.MessageBox.Show($"Error found in line: {lineCounter} ");                
+                }
+                lineCounter++;
+            }
+
+            if (syntaxCorrect == false)
+            {
+                return;
+            }
+
             foreach (var input in commands)
             {                
 
@@ -90,7 +128,7 @@ namespace DrawingAppASE
                     default:
                         if (!insideMethod)
                         {
-                            ParseCommand(graphics, pen, input, command);
+                            ParseCommand(graphics, pen, input);
                         }
                         else
                         {
@@ -103,7 +141,51 @@ namespace DrawingAppASE
             }
         }
 
-        public static void ParseCommand(Graphics graphics, Pen pen, string input, string command)
+        public static bool CheckSyntax(Graphics graphics, Pen pen, IEnumerable<string> commands, string input)
+        {            
+            if (input.Split(' ').Count() > 1)
+            {
+                if (input.Split(' ')[1] == "=")
+                {
+                    return true;
+                }
+            }
+
+            if (!commandsList.Contains(command) & !commandsList.Contains(input.Split('(')[0]))
+            {
+                System.Windows.Forms.MessageBox.Show("ERROR: Invalid command");
+                return false;
+            }
+
+            if (command == "pen" || command == "fill" || command == "circle")
+            {
+                if (input.Split(' ')[1].Split(',').Count() != 1)
+                {
+                    System.Windows.Forms.MessageBox.Show("ERROR: Wrong number of parameters. Parameters for command needed: 1");
+                    return false;
+                }
+            }
+            if (command == "moveto" || command == "drawto" || command == "rectangle")
+            {
+                if (input.Split(' ')[1].Split(',').Count() != 2)
+                {
+                    System.Windows.Forms.MessageBox.Show("ERROR: Wrong number of parameters. Parameters for command needed: 2");
+                    return false;
+                }
+            }
+            if (command == "triangle")
+            {
+                if (input.Split(' ')[1].Split(',').Count() != 6)
+                {
+                    System.Windows.Forms.MessageBox.Show("ERROR: Wrong number of parameters. Parameters for command needed: 6");
+                    return false;
+                }
+            }
+
+            return true;                    
+        }
+
+        public static void ParseCommand(Graphics graphics, Pen pen, string input)
         {
             if (executeCommands == true)
             {
@@ -289,6 +371,7 @@ namespace DrawingAppASE
                 var parameters = input.Split(' ')[1].Split('(')[1].Split(')')[0].Split(',');
                 if (!methods.ContainsKey(methodName))
                 {
+                    commandsList.Add(methodName);
                     methods.Add(key: methodName, value: parameters);
                     insideMethod = true;
                     executeCommands = false;
