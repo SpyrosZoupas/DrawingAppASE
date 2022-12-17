@@ -30,7 +30,8 @@ namespace DrawingAppASE
         private static bool executeCommands = true;
         private static bool insideMethod = false;
         private static bool insideLoop = false;
-        private static bool syntaxCorrect = true;
+        private static bool syntaxCorrect;
+        private static Font myFont = new Font("Arial", 14);
         private static ShapeFactory shapeFactory = new ShapeFactory();
         private static DataTable dataTable = new DataTable();
         private static List<string> methodCommands = new List<string>();
@@ -65,8 +66,12 @@ namespace DrawingAppASE
         /// <param name="pen"></param>
         /// <param name="commands">collection of one or more user commands being parsed</param>
         /// <exception cref="ArgumentException"></exception>
-        public static void ParseAction(Graphics graphics, Pen pen, IEnumerable<string> commands)
+        public static bool ParseAction(Graphics graphics, Pen pen, IEnumerable<string> commands)
         {
+            if (syntaxCorrect == false)
+            {
+                graphics.Clear(Color.Gray);
+            }
             lineCounter = 1;
             syntaxCorrect = true;
             methods.Clear();
@@ -75,15 +80,14 @@ namespace DrawingAppASE
                 command = input.Split(' ')[0];
                 if(!CheckSyntax(graphics,pen,commands,input))
                 {
-                    syntaxCorrect = false;
-                    System.Windows.Forms.MessageBox.Show($"Error found in line: {lineCounter} ");                
+                    syntaxCorrect = false;                   
                 }
                 lineCounter++;
             }
 
             if (syntaxCorrect == false)
             {
-                return;
+                return false;
             }
 
             foreach (var input in commands)
@@ -138,10 +142,9 @@ namespace DrawingAppASE
                             methodCommands.Add(input);
                         }
                         break;
-                }  
-                
-                
+                }
             }
+            return true;
         }
 
         public static bool CheckSyntax(Graphics graphics, Pen pen, IEnumerable<string> commands, string input)
@@ -157,7 +160,7 @@ namespace DrawingAppASE
 
             if (!commandsList.Contains(command) & !commandsList.Contains(input.Split('(')[0]))
             {
-                System.Windows.Forms.MessageBox.Show("ERROR: Invalid command");
+                graphics.DrawString($"ERROR: Invalid command, Error found in line: {lineCounter} ", myFont, Brushes.Red, new Point(2, 2));
                 return false;
             }
 
@@ -165,7 +168,7 @@ namespace DrawingAppASE
             {
                 if (input.Trim().Split(' ').Length > 1)
                 {
-                    System.Windows.Forms.MessageBox.Show("ERROR: Wrong number of parameters. Parameters for command needed: 0");
+                    graphics.DrawString($"ERROR: Wrong number of parameters. Parameters for command needed: 0", myFont, Brushes.Red, new Point(2, 2));    
                     return false;
                 }
             }
@@ -176,7 +179,7 @@ namespace DrawingAppASE
                 {
                     if (input.Split(' ')[1].Split(',').Length != 1)
                     {
-                        System.Windows.Forms.MessageBox.Show("ERROR: Wrong number of parameters. Parameters for command needed: 1");
+                        graphics.DrawString($"ERROR: Wrong number of parameters. Parameters for command needed: 1", myFont, Brushes.Red, new Point(2, 2));
                         return false;
                     }
                 }
@@ -184,7 +187,7 @@ namespace DrawingAppASE
                 {
                     if (input.Split(' ')[1].Split(',').Count() != 2)
                     {
-                        System.Windows.Forms.MessageBox.Show("ERROR: Wrong number of parameters. Parameters for command needed: 2");
+                        graphics.DrawString($"ERROR: Wrong number of parameters. Parameters for command needed: 2", myFont, Brushes.Red, new Point(2, 2));
                         return false;
                     }
                 }
@@ -192,7 +195,7 @@ namespace DrawingAppASE
                 {
                     if (input.Split(' ')[1].Split(',').Count() != 6)
                     {
-                        System.Windows.Forms.MessageBox.Show("ERROR: Wrong number of parameters. Parameters for command needed: 6");
+                        graphics.DrawString($"ERROR: Wrong number of parameters. Parameters for command needed: 6", myFont, Brushes.Red, new Point(2, 2));
                         return false;
                     }
                 }
@@ -200,7 +203,7 @@ namespace DrawingAppASE
             
             if (input.Trim().Split(' ').Length == 1 & command != "reset" & command != "clear" & command != "endmethod" & !commandsList.Contains(command.Split('(')[0]))
             {
-                System.Windows.Forms.MessageBox.Show("ERROR: Command needs parameters");
+                graphics.DrawString($"ERROR: Command needs parameters", myFont, Brushes.Red, new Point(2, 2));
                 return false;
             }
 
@@ -413,7 +416,7 @@ namespace DrawingAppASE
                 }
                 else
                 {
-                    System.Windows.Forms.MessageBox.Show("ERROR: A method with that name already exists");
+                    graphics.DrawString($"ERROR: a method with that name already exists, Error found in line: {lineCounter} ", myFont, Brushes.Red, new Point(2, 2));
                 }
             } 
             else

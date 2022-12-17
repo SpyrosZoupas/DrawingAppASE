@@ -22,7 +22,7 @@ namespace DrawingAppASE
         private Pen pen;
         private Graphics graphics;
         private List<string> commands;
-       
+        private static Font myFont = new Font("Arial", 14);
 
         public MainForm()
         {
@@ -53,7 +53,7 @@ namespace DrawingAppASE
         private void paintBox_Paint(object sender, PaintEventArgs e)
         {
             graphics = e.Graphics;
-            graphics.DrawImageUnscaled(OutputBitmap, 0, 0);
+            graphics.DrawImageUnscaled(OutputBitmap, 0, 0);            
         }
 
         /// <summary>
@@ -92,12 +92,16 @@ namespace DrawingAppASE
             commands.AddRange(MultiLineBox.Text.Replace('\r', ' ').Trim().ToLower().Split('\n'));
             graphics = Graphics.FromImage(OutputBitmap);
             try
-            {
-                Parser.ParseAction(graphics, pen, commands);
+            {               
+                Parser.ParseAction(graphics, pen, commands);             
             }
             catch (FormatException)
             {
-                System.Windows.Forms.MessageBox.Show("ERROR: Parameter has to be an integer");
+                graphics.DrawString("ERROR: Parameter has to be an integer", myFont, Brushes.Red, new Point(2, 2));
+            }
+            catch (SyntaxErrorException)
+            {
+                graphics.DrawString("ERROR: variable values can only be numbers", myFont, Brushes.Red, new Point(2, 2));
             }
             Refresh();
             commands.Clear();
@@ -122,7 +126,8 @@ namespace DrawingAppASE
                 try
                 {
                     Parser.ParseAction(graphics, pen, commands);
-                } catch (FormatException)
+                } 
+                catch (FormatException)
                 {
                     System.Windows.Forms.MessageBox.Show("ERROR: Parameter has to be an integer");
                 }
