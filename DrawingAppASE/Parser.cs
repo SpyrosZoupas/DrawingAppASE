@@ -105,7 +105,7 @@ namespace DrawingAppASE
                 switch (command)
                 {
                     case "method":                       
-                        ParseMethod(input, command);
+                        ParseMethod(input, command, graphics);
                         break;
                     case "endmethod":
                         insideMethod = false;
@@ -238,7 +238,7 @@ namespace DrawingAppASE
                         default:
                             if (methods.ContainsKey(input.Split('(')[0]))
                             {
-                                ParseMethod(input,command);
+                                ParseMethod(input, command, graphics);
                                 ParseAction(graphics, pen, methodCommands);
                             }
                             else
@@ -397,7 +397,7 @@ namespace DrawingAppASE
             }
         }
 
-        public static void ParseMethod(string input, string command)
+        public static void ParseMethod(string input, string command, Graphics graphics)
         {
             if (command == "method")
             {
