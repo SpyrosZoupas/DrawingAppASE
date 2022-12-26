@@ -1,9 +1,12 @@
-﻿using System;
+﻿using Antlr.Runtime;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Drawing;
 using System.Drawing.Text;
 using System.Linq;
+using System.Linq.Dynamic.Core.Parser;
+using System.Linq.Expressions;
 using System.Net;
 using System.Reflection;
 using System.Runtime.CompilerServices;
@@ -23,7 +26,7 @@ namespace DrawingAppASE
         private static int iterations;
         private static int loopCounter = 0;
         private static int loopSize = 0;
-        private static int lineCounter = 1;
+        public static int lineCounter = 1;
         private static string command;
         private static string nameOfMethod;
         private static bool fill = false;
@@ -95,8 +98,6 @@ namespace DrawingAppASE
 
                 command = input.Split(' ')[0];
 
-                //change it so variables can be used in if conditions
-
                 if (insideLoop == true)
                 {
                     loopCommands.Add(input);
@@ -153,14 +154,15 @@ namespace DrawingAppASE
             if (input.Split(' ').Count() > 1)
             {
                 if (input.Split(' ')[1] == "=")
-                {
+                {                
                     return true;
                 }
             }
 
             if (!commandsList.Contains(command) & !commandsList.Contains(input.Split('(')[0]))
             {
-                graphics.DrawString($"ERROR: Invalid command, Error found in line: {lineCounter} ", myFont, Brushes.Red, new Point(2, 2));
+                graphics.DrawString("ERROR: Invalid command", myFont, Brushes.Red, new Point(2, 2));    
+                graphics.DrawString($"Error found in line: {lineCounter}", myFont, Brushes.Red, new Point(2, 30));
                 return false;
             }
 
@@ -168,7 +170,8 @@ namespace DrawingAppASE
             {
                 if (input.Trim().Split(' ').Length > 1)
                 {
-                    graphics.DrawString($"ERROR: Wrong number of parameters. Parameters for command needed: 0", myFont, Brushes.Red, new Point(2, 2));    
+                    graphics.DrawString("ERROR: Wrong number of parameters. Parameters for command needed: 0", myFont, Brushes.Red, new Point(2, 2));
+                    graphics.DrawString($"Error found in line: {lineCounter}", myFont, Brushes.Red, new Point(2, 30));
                     return false;
                 }
             }
@@ -180,22 +183,47 @@ namespace DrawingAppASE
                     if (input.Split(' ')[1].Split(',').Length != 1)
                     {
                         graphics.DrawString($"ERROR: Wrong number of parameters. Parameters for command needed: 1", myFont, Brushes.Red, new Point(2, 2));
+                        graphics.DrawString($"Error found in line: {lineCounter}", myFont, Brushes.Red, new Point(2, 30));
                         return false;
                     }
+
+                    if (command == "pen")
+                    {
+                        if (input.Split(' ')[1] != "green" & input.Split(' ')[1] != "blue" & input.Split(' ')[1] != "red" & input.Split(' ')[1] != "yellow")
+                        {
+                            graphics.DrawString("ERROR: Please choose a valid colour", myFont, Brushes.Red, new Point(2, 2));
+                            graphics.DrawString($"Error found in line: {lineCounter}", myFont, Brushes.Red, new Point(2, 30));
+                            return false;
+                        }                      
+                    }
+
+                    if (command == "fill")
+                    {
+                        if (input.Split(' ')[1] != "on" & input.Split(' ')[1] != "off")
+                        {
+                            graphics.DrawString("ERROR: fill command only accepts 'on' or 'off' as parameters", myFont, Brushes.Red, new Point(2, 2));
+                            graphics.DrawString($"Error found in line: {lineCounter}", myFont, Brushes.Red, new Point(2, 30));
+                            return false;
+                        }
+                    }
                 }
+
                 if (command == "moveto" || command == "drawto" || command == "rectangle")
                 {
                     if (input.Split(' ')[1].Split(',').Count() != 2)
                     {
                         graphics.DrawString($"ERROR: Wrong number of parameters. Parameters for command needed: 2", myFont, Brushes.Red, new Point(2, 2));
+                        graphics.DrawString($"Error found in line: {lineCounter}", myFont, Brushes.Red, new Point(2, 30));
                         return false;
                     }
                 }
+
                 if (command == "triangle")
                 {
                     if (input.Split(' ')[1].Split(',').Count() != 6)
                     {
                         graphics.DrawString($"ERROR: Wrong number of parameters. Parameters for command needed: 6", myFont, Brushes.Red, new Point(2, 2));
+                        graphics.DrawString($"Error found in line: {lineCounter}", myFont, Brushes.Red, new Point(2, 30));
                         return false;
                     }
                 }
@@ -204,6 +232,7 @@ namespace DrawingAppASE
             if (input.Trim().Split(' ').Length == 1 & command != "reset" & command != "clear" & command != "endmethod" & !commandsList.Contains(command.Split('(')[0]))
             {
                 graphics.DrawString($"ERROR: Command needs parameters", myFont, Brushes.Red, new Point(2, 2));
+                graphics.DrawString($"Error found in line: {lineCounter}", myFont, Brushes.Red, new Point(2, 30));
                 return false;
             }
 
@@ -240,11 +269,7 @@ namespace DrawingAppASE
                             {
                                 ParseMethod(input, command, graphics);
                                 ParseAction(graphics, pen, methodCommands);
-                            }
-                            else
-                            {
-                                System.Windows.Forms.MessageBox.Show("ERROR: Invalid command");
-                            }
+                            }                        
                             break;
                     }
                 }
@@ -268,22 +293,14 @@ namespace DrawingAppASE
                                 {
                                     x = Parser.ParseInt(parameters[0]);
                                     y = Parser.ParseInt(parameters[1]);
-                                }
-                                else
-                                {
-                                    System.Windows.Forms.MessageBox.Show("ERROR: Wrong numbers of parameters. Parameters needed = 2");
-                                }
+                                }                           
                                 break;
                             case "drawto":
                                 if (parameters.Length == 2)
                                 {
                                     var drawTo = new DrawTo(x, y, Parser.ParseInt(parameters[0]), Parser.ParseInt(parameters[1]));
                                     drawTo.Draw(graphics, pen, fill);
-                                }
-                                else
-                                {
-                                    System.Windows.Forms.MessageBox.Show("ERROR: Wrong numbers of parameters. Parameters needed = 2");
-                                }
+                                }                               
                                 break;
                             case "pen":
                                 if (parameters.Length == 1)
@@ -301,16 +318,9 @@ namespace DrawingAppASE
                                             break;
                                         case "yellow":
                                             pen.Color = Color.Yellow;
-                                            break;
-                                        default:
-                                            System.Windows.Forms.MessageBox.Show("ERROR: Please choose a valid colour");
-                                            break;
+                                            break;                                      
                                     }
-                                }
-                                else
-                                {
-                                    System.Windows.Forms.MessageBox.Show("ERROR: Wrong numbers of parameters. Parameters needed = 1");
-                                }
+                                }                               
                                 break;
                             case "fill":
                                 if (parameters.Length == 1)
@@ -323,15 +333,7 @@ namespace DrawingAppASE
                                     {
                                         fill = false;
                                     }
-                                    else
-                                    {
-                                        System.Windows.Forms.MessageBox.Show("ERROR: fill command only accepts 'on' or 'off' as parameters");
-                                    }
-                                }
-                                else
-                                {
-                                    System.Windows.Forms.MessageBox.Show("ERROR: Wrong numbers of parameters. Parameters needed = 1");
-                                }
+                                }                               
                                 break;
                             case "circle":
                                 if (parameters.Length == 1)
@@ -339,10 +341,6 @@ namespace DrawingAppASE
                                     paramList.Add(Parser.ParseInt(parameters[0]));
                                     var circle = shapeFactory.CreateShape(command, paramList);
                                     circle.Draw(graphics, pen, fill);
-                                }
-                                else
-                                {
-                                    System.Windows.Forms.MessageBox.Show("ERROR: Wrong numbers of parameters. Parameters needed = 1");
                                 }
                                 break;
                             case "rectangle":
@@ -352,11 +350,7 @@ namespace DrawingAppASE
                                     paramList.Add(Parser.ParseInt(parameters[1]));
                                     var rectangle = shapeFactory.CreateShape(command, paramList);
                                     rectangle.Draw(graphics, pen, fill);
-                                }
-                                else
-                                {
-                                    System.Windows.Forms.MessageBox.Show("ERROR: Wrong numbers of parameters. Parameters needed = 2");
-                                }
+                                }                           
                                 break;
                             case "triangle":
                                 if (parameters.Length == 6)
@@ -369,15 +363,8 @@ namespace DrawingAppASE
                                     }
                                     var triangle = shapeFactory.CreateShape(command, paramList);
                                     triangle.Draw(graphics, pen, fill);
-                                }
-                                else
-                                {
-                                    System.Windows.Forms.MessageBox.Show("ERROR: Wrong numbers of parameters. Parameters needed = 6");
-                                }
-                                break;
-                            default:                              
-                                System.Windows.Forms.MessageBox.Show("ERROR: Invalid command");
-                                break;
+                                }                             
+                                break;                         
                         }
                     }
                 }
@@ -403,7 +390,8 @@ namespace DrawingAppASE
                 }
                 else
                 {
-                    graphics.DrawString($"ERROR: a method with that name already exists, Error found in line: {lineCounter} ", myFont, Brushes.Red, new Point(2, 2));
+                    graphics.DrawString($"ERROR: a method with that name already exists", myFont, Brushes.Red, new Point(2, 2));
+                    graphics.DrawString($"Error found in line: {lineCounter}", myFont, Brushes.Red, new Point(2, 30));
                 }
             } 
             else
