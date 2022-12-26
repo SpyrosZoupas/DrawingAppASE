@@ -255,21 +255,8 @@ namespace DrawingAppASE
                     var parameters = input.Split(' ')[1].Split(',');
 
                     if (parameters[0] == "=")
-                    {
-                        //KeyValuePair<string, int> test
-                        //var value = Convert.ToInt32(input.Split(' ')[2]);
-                        var expression = input.Split('=')[1].Trim();
-                        StringBuilder builder = new StringBuilder(expression);
-                        foreach (KeyValuePair<string, int> test in Variable.variables)
-                        {
-                            if (expression.Contains(test.Key))
-                            {
-                                builder.Replace(test.Key, Convert.ToString(test.Value));
-                            }
-                        }
-                        string newExpression = builder.ToString();
-                        var value = dataTable.Compute(newExpression, "");
-                        var variable = new Variable(command, Convert.ToInt32(value));
+                    {                       
+                        ParseVariable(input);
                     }
                     else
                     {
@@ -430,6 +417,22 @@ namespace DrawingAppASE
                     counter++;
                 }
             }
+        }
+
+        public static void ParseVariable(string input)
+        {
+            var expression = input.Split('=')[1].Trim();
+            StringBuilder builder = new StringBuilder(expression);
+            foreach (KeyValuePair<string, int> test in Variable.variables)
+            {
+                if (expression.Contains(test.Key))
+                {
+                    builder.Replace(test.Key, Convert.ToString(test.Value));
+                }
+            }
+            string newExpression = builder.ToString();
+            var value = dataTable.Compute(newExpression, "");
+            var variable = new Variable(command, Convert.ToInt32(value));
         }
 
         /// <summary>
