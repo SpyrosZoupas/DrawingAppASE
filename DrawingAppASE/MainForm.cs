@@ -22,7 +22,7 @@ namespace DrawingAppASE
         private Pen pen;
         private Graphics graphics;
         private List<string> commands;
-        private static Font myFont = new Font("Arial", 14);
+        private static Font myFont = new Font("Arial", 10);
 
         public MainForm()
         {
@@ -97,11 +97,18 @@ namespace DrawingAppASE
             }
             catch (FormatException)
             {
-                graphics.DrawString("ERROR: Parameter has to be an integer", myFont, Brushes.Red, new Point(2, 2));
+                graphics.DrawString("ERROR: Parameter has to be an integer or variable", myFont, Brushes.Red, new Point(2, 2));
+                graphics.DrawString($"Error found in line: {Parser.lineCounter}", myFont, Brushes.Red, new Point(2, 30));
             }
             catch (SyntaxErrorException)
             {
                 graphics.DrawString("ERROR: variable values can only be numbers", myFont, Brushes.Red, new Point(2, 2));
+                graphics.DrawString($"Error found in line: {Parser.lineCounter}", myFont, Brushes.Red, new Point(2, 30));
+            }
+            catch (EvaluateException)
+            {
+                graphics.DrawString("ERROR: variable values can only be numbers", myFont, Brushes.Red, new Point(2, 2));
+                graphics.DrawString($"Error found in line: {Parser.lineCounter}", myFont, Brushes.Red, new Point(2, 30));
             }
             Refresh();
             commands.Clear();
