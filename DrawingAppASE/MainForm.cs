@@ -110,6 +110,11 @@ namespace DrawingAppASE
                 graphics.DrawString("ERROR: variable values can only be numbers", myFont, Brushes.Red, new Point(2, 2));
                 graphics.DrawString($"Error found in line: {Parser.lineCounter}", myFont, Brushes.Red, new Point(2, 30));
             }
+            catch (OverflowException)
+            {
+                graphics.DrawString("ERROR: value is too large, try a smaller value", myFont, Brushes.Red, new Point(2, 2));
+                graphics.DrawString($"Error found in line: {Parser.lineCounter}", myFont, Brushes.Red, new Point(2, 30));
+            }
             Refresh();
             commands.Clear();
         }
