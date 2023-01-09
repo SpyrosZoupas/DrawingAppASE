@@ -16,8 +16,8 @@ using System.Windows.Forms;
 namespace DrawingAppASE
 {
     /// <summary>
-    /// Parser class that takes one or more user commands as input either from command line or program box and analyses each command,
-    /// decides whether to execute it or if there is a mistake inform the user how to fix it
+    /// Parser class that takes one or more user commands as input either from command line or program box and analyses each command, checks for errors,
+    /// informs the user if there are any, and executes each command if there are no errors
     /// </summary>
     public class Parser
     {
@@ -60,14 +60,11 @@ namespace DrawingAppASE
         };
 
         /// <summary>
-        /// ParseAction method parses each line of commands from <paramref name="commands"/>
-        /// splits each line between command and parameters then splits parameters between them
-        /// calls command or informs the user in case of error
+        /// Parses each line of commands from <paramref name="commands"/>
+        /// Calls CheckSyntax method before starting execution to check for errors
+        /// Calls the appropriate method depending on the nature of each command
         /// </summary>
-        /// <param name="graphics"></param>
-        /// <param name="pen"></param>
         /// <param name="commands">collection of one or more user commands being parsed</param>
-        /// <exception cref="ArgumentException"></exception>
         public static bool ParseAction(Graphics graphics, Pen pen, IEnumerable<string> commands)
         {           
             if (syntaxCorrect == false)
@@ -150,6 +147,9 @@ namespace DrawingAppASE
             return true;
         }
 
+        /// <summary>
+        /// Gets called for each command and checks if there are any errors, returns false if an error is found, returns true otherwise
+        /// </summary>
         public static bool CheckSyntax(Graphics graphics, Pen pen, IEnumerable<string> commands, string input)
         {
 
@@ -251,6 +251,10 @@ namespace DrawingAppASE
             return true;                    
         }
 
+        /// <summary>
+        /// Gets called if the command is a shape command, clear, reset, move, pen or fill
+        /// Executes the selected command
+        /// </summary>
         public static void ParseCommand(Graphics graphics, Pen pen, string input)
         {
             if (executeCommands == true)
@@ -291,22 +295,16 @@ namespace DrawingAppASE
                         switch (command)
                         {
                             case "moveto":
-                                if (parameters.Length == 2)
-                                {
                                     x = Parser.ParseInt(parameters[0]);
-                                    y = Parser.ParseInt(parameters[1]);
-                                }                           
+                                    y = Parser.ParseInt(parameters[1]);                        
                                 break;
                             case "drawto":
-                                if (parameters.Length == 2)
-                                {
-                                    var drawTo = new DrawTo(x, y, Parser.ParseInt(parameters[0]), Parser.ParseInt(parameters[1]));
-                                    drawTo.Draw(graphics, pen, fill);
-                                }                               
+                                    paramList.Add(Parser.ParseInt(parameters[0]));
+                                    paramList.Add(Parser.ParseInt(parameters[1]));
+                                    var drawTo = shapeFactory.CreateShape(command, paramList);
+                                    drawTo.Draw(graphics, pen, fill);                             
                                 break;
                             case "pen":
-                                if (parameters.Length == 1)
-                                {
                                     switch (parameters[0])
                                     {
                                         case "green":
@@ -321,12 +319,9 @@ namespace DrawingAppASE
                                         case "yellow":
                                             pen.Color = Color.Yellow;
                                             break;                                      
-                                    }
-                                }                               
+                                    }                            
                                 break;
                             case "fill":
-                                if (parameters.Length == 1)
-                                {
                                     if (parameters[0] == "on")
                                     {
                                         fill = true;
@@ -335,28 +330,19 @@ namespace DrawingAppASE
                                     {
                                         fill = false;
                                     }
-                                }                               
                                 break;
                             case "circle":
-                                if (parameters.Length == 1)
-                                {
                                     paramList.Add(Parser.ParseInt(parameters[0]));
                                     var circle = shapeFactory.CreateShape(command, paramList);
                                     circle.Draw(graphics, pen, fill);
-                                }
                                 break;
-                            case "rectangle":
-                                if (parameters.Length == 2)
-                                {
+                            case "rectangle":                               
                                     paramList.Add(Parser.ParseInt(parameters[0]));
                                     paramList.Add(Parser.ParseInt(parameters[1]));
                                     var rectangle = shapeFactory.CreateShape(command, paramList);
-                                    rectangle.Draw(graphics, pen, fill);
-                                }                           
+                                    rectangle.Draw(graphics, pen, fill);                           
                                 break;
-                            case "triangle":
-                                if (parameters.Length == 6)
-                                {
+                            case "triangle":                               
                                     var paramCounter = 0;
                                     foreach (var param in parameters)
                                     {
@@ -364,8 +350,7 @@ namespace DrawingAppASE
                                         paramCounter++;
                                     }
                                     var triangle = shapeFactory.CreateShape(command, paramList);
-                                    triangle.Draw(graphics, pen, fill);
-                                }                             
+                                    triangle.Draw(graphics, pen, fill);                                                      
                                 break;                         
                         }
                     }
@@ -373,6 +358,15 @@ namespace DrawingAppASE
             }
         }
 
+        /// <summary>
+        /// Gets called if command is method
+        /// checks if a method with the same name exists already in the program
+        /// if a method with similar name exists produces an error
+        /// else saves the method with its name and parameters
+        /// </summary>
+        /// <param name="input"></param>
+        /// <param name="command"></param>
+        /// <param name="graphics"></param>
         public static void ParseMethod(string input, string command, Graphics graphics)
         {
             if (command == "method")
@@ -409,6 +403,12 @@ namespace DrawingAppASE
             }
         }
 
+        /// <summary>
+        /// Gets called when a user declares a variable
+        /// If variable with similar name does not exist, new variable object is created
+        /// Also gets called when an expression needs parsing
+        /// </summary>
+        /// <param name="input"></param>
         public static void ParseVariable(string input)
         {
             var expression = input.Split('=')[1].Trim();
@@ -426,10 +426,12 @@ namespace DrawingAppASE
         }
 
         /// <summary>
-        /// ParseInt method checks whether a parameter is an integer
+        /// Checks whether a parameter is an integer
+        /// If true returns the parameter as an integer
+        /// else checks if parameter is a variable name
+        /// If true returns variable value
+        /// else throws FormatException()
         /// </summary>
-        /// <param name="parameter">single parameter of a command</param>
-        /// <returns></returns>
         public static int ParseInt(string parameter)
         {
             if (int.TryParse(parameter, out int result))

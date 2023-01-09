@@ -7,6 +7,9 @@ using System.Threading.Tasks;
 
 namespace DrawingAppASE
 {
+    /// <summary>
+    /// Circle class used to draw a circle 
+    /// </summary>
     public class Circle : Shape
     {
         private int Radius { get; set; }
@@ -19,8 +22,6 @@ namespace DrawingAppASE
         /// <summary>
         /// Decides whether to draw or fill a circle based on <paramref name="fill"/>
         /// </summary>
-        /// <param name="graphics"></param>
-        /// <param name="pen"></param>
         /// <param name="fill"></param>
         public override void Draw(Graphics graphics, Pen pen, bool fill)
         {
@@ -36,9 +37,7 @@ namespace DrawingAppASE
 
         /// <summary>
         /// Draws a circle using a pen
-        /// </summary>
-        /// <param name="graphics"></param>
-        /// <param name="pen"></param>
+        /// </summary>>
         private void Draw(Graphics graphics, Pen pen)
         {
             graphics.DrawEllipse(pen, x, y, Radius, Radius);
@@ -46,9 +45,7 @@ namespace DrawingAppASE
 
         /// <summary>
         /// Draws a circle using a brush, fills the shape with colour
-        /// </summary>
-        /// <param name="graphics"></param>
-        /// <param name="brush"></param>
+        /// </summary>      
         private void Draw(Graphics graphics, Brush brush)
         {
             graphics.FillEllipse(brush, x, y, Radius, Radius);

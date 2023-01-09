@@ -14,6 +14,9 @@ using static System.Net.Mime.MediaTypeNames;
 
 namespace DrawingAppASE
 {
+    /// <summary>
+    /// Form of the program used as user interface
+    /// </summary>
     public partial class MainForm : Form
     {
         private readonly Bitmap OutputBitmap;
@@ -83,9 +86,10 @@ namespace DrawingAppASE
         }
 
         /// <summary>
-        /// Method gets called when the user enters the command "run" into the command line
+        /// Method gets called when the user enters the command "run" into the command line or clicks the multi-line "draw" button
         /// separates and adds each line of the program box in commands List
-        /// cclls ParseAction to parse List of commands and call them  or inform the user in case of error
+        /// calls ParseAction to parse List of commands and call them  or inform the user in case of error
+        /// handles possible exceptions
         /// </summary>
         private void ProcessMultiLine()
         {

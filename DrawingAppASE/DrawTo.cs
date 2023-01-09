@@ -7,6 +7,9 @@ using System.Threading.Tasks;
 
 namespace DrawingAppASE
 {
+    /// <summary>
+    /// drawto class that draws a line
+    /// </summary>
     public class DrawTo : Shape
     {
         private int X1 { get; set; }
