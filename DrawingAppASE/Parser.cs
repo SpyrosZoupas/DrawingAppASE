@@ -25,7 +25,6 @@ namespace DrawingAppASE
         private static int y = 0;
         private static int iterations;
         private static int loopCounter = 0;
-        private static int loopSize = 0;
         public static int lineCounter = 1;
         private static string command;
         private static string nameOfMethod;
@@ -70,11 +69,12 @@ namespace DrawingAppASE
         /// <param name="commands">collection of one or more user commands being parsed</param>
         /// <exception cref="ArgumentException"></exception>
         public static bool ParseAction(Graphics graphics, Pen pen, IEnumerable<string> commands)
-        {
+        {           
             if (syntaxCorrect == false)
             {
                 graphics.Clear(Color.Gray);
             }
+
             lineCounter = 1;
             syntaxCorrect = true;
             methods.Clear();
@@ -84,10 +84,12 @@ namespace DrawingAppASE
                 if(!CheckSyntax(graphics,pen,commands,input))
                 {
                     syntaxCorrect = false;                   
+                } else
+                {
+                    lineCounter++;
                 }
-                lineCounter++;
             }
-
+           
             if (syntaxCorrect == false)
             {
                 return false;
@@ -215,7 +217,7 @@ namespace DrawingAppASE
                         graphics.DrawString($"ERROR: Wrong number of parameters. Parameters for command needed: 2", myFont, Brushes.Red, new Point(2, 2));
                         graphics.DrawString($"Error found in line: {lineCounter}", myFont, Brushes.Red, new Point(2, 30));
                         return false;
-                    }
+                    }                  
                 }
 
                 if (command == "triangle")
@@ -225,7 +227,7 @@ namespace DrawingAppASE
                         graphics.DrawString($"ERROR: Wrong number of parameters. Parameters for command needed: 6", myFont, Brushes.Red, new Point(2, 2));
                         graphics.DrawString($"Error found in line: {lineCounter}", myFont, Brushes.Red, new Point(2, 30));
                         return false;
-                    }
+                    }                 
                 }
             } 
             
@@ -440,6 +442,7 @@ namespace DrawingAppASE
             } 
             else
             {
+                lineCounter--;
                 throw new FormatException();
             }
         }      
