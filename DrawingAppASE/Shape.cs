@@ -10,7 +10,7 @@ namespace DrawingAppASE
     /// <summary>
     /// Abstract shape class that all shapes inherit from, holds common properties and methods found in all shapes
     /// </summary>
-    public abstract class Shape
+    public abstract class Shape:Shapes
     {
         protected Color colour;
         protected int x, y;
