@@ -73,5 +73,23 @@ namespace DrawingAppASE.Tests
                 Assert.AreEqual(e.Message, "One of the identified items was in an invalid format.");
             }
         }
+
+        [TestMethod]
+        public void ParseAction_WhenProvidedWithValidCommandAndValidUserDeclaredVariableAsParameters_RunsSuccessfully()
+        {
+            try
+            {
+                var bitmap = new Bitmap(300, 500);
+                var graphics = Graphics.FromImage(bitmap);
+                var pen = new Pen(Color.Red);
+                Variable x = new Variable("x",100); 
+                var commands = new List<string>() { "circle x" };
+                Parser.ParseAction(graphics, pen, commands);
+            }
+            catch
+            {
+                Assert.Fail();
+            }
+        }
     }
 }
