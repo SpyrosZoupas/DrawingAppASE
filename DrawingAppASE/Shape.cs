@@ -13,7 +13,7 @@ namespace DrawingAppASE
     public abstract class Shape:Shapes
     {
         protected Color colour;
-        protected int x, y;
+        public int x, y;
 
         public Shape(int x, int y)
         {

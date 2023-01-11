@@ -30,7 +30,5 @@ namespace DrawingAppASE
                 variables.Add(key: variableName, value: value);
             }
         }
-
-        //should I put the code in the constructor in a seperate method and leave the constructor empty? and call that method in the parser class
     }
 }

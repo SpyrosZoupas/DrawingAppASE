@@ -119,6 +119,11 @@ namespace DrawingAppASE
                 graphics.DrawString("ERROR: value is too large, try a smaller value", myFont, Brushes.Red, new Point(2, 2));
                 graphics.DrawString($"Error found in line: {Parser.lineCounter}", myFont, Brushes.Red, new Point(2, 30));
             }
+            catch (StackOverflowException)
+            {
+                graphics.DrawString("ERROR: Stack overflow", myFont, Brushes.Red, new Point(2, 2));
+                graphics.DrawString($"Error found in line: {Parser.lineCounter}", myFont, Brushes.Red, new Point(2, 30));
+            }
             Refresh();
             commands.Clear();
         }
@@ -142,10 +147,26 @@ namespace DrawingAppASE
                 try
                 {
                     Parser.ParseAction(graphics, pen, commands);
-                } 
+                }
                 catch (FormatException)
                 {
-                    System.Windows.Forms.MessageBox.Show("ERROR: Parameter has to be an integer");
+                    graphics.DrawString("ERROR: Parameter has to be an integer or variable", myFont, Brushes.Red, new Point(2, 2));                   
+                }
+                catch (SyntaxErrorException)
+                {
+                    graphics.DrawString("ERROR: variable values can only be numbers", myFont, Brushes.Red, new Point(2, 2));                 
+                }
+                catch (EvaluateException)
+                {
+                    graphics.DrawString("ERROR: variable values can only be numbers", myFont, Brushes.Red, new Point(2, 2));
+                }
+                catch (OverflowException)
+                {
+                    graphics.DrawString("ERROR: value is too large, try a smaller value", myFont, Brushes.Red, new Point(2, 2));
+                }
+                catch (StackOverflowException)
+                {
+                    graphics.DrawString("ERROR: Stack overflow", myFont, Brushes.Red, new Point(2, 2));
                 }
                 Refresh();
                 commands.Clear();

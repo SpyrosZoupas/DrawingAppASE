@@ -12,7 +12,7 @@ namespace DrawingAppASE
     /// </summary>
     public class Circle : Shape
     {
-        private int Radius { get; set; }
+        public int Radius { get; set; }
 
         public Circle(int x, int y, int radius) : base(x, y)
         {

@@ -78,7 +78,7 @@ namespace DrawingAppASE
             foreach (var input in commands)
             {
                 command = input.Split(' ')[0];
-                if(!CheckSyntax(graphics,pen,commands,input))
+                if (!CheckSyntax(graphics, pen, input))
                 {
                     syntaxCorrect = false;                   
                 } else
@@ -121,13 +121,19 @@ namespace DrawingAppASE
                         if (loopCounter < iterations)
                         {
                             ParseAction(graphics, pen, loopCommands);
+                            loopCounter = 0;
                         }
                         break;
                     case "if":
-                        if (!Convert.ToBoolean(dataTable.Compute(input.Split(' ')[1], "")))
+                        if (ParseExpression(input.Split(' ')[1].Trim()) != ParseInt(input.Split(' ')[1].Split('=')[0]))
                         {
                             executeCommands = false;
                         }
+                        
+                        //if (!Convert.ToBoolean(ParseExpression(input.Split(' ')[1].Trim())))
+                        //{
+                        //    executeCommands = false;
+                        //}
                         break;
                     case "endif":
                         executeCommands = true;
@@ -150,7 +156,7 @@ namespace DrawingAppASE
         /// <summary>
         /// Gets called for each command and checks if there are any errors, returns false if an error is found, returns true otherwise
         /// </summary>
-        public static bool CheckSyntax(Graphics graphics, Pen pen, IEnumerable<string> commands, string input)
+        public static bool CheckSyntax(Graphics graphics, Pen pen, string input)
         {
 
             if (input.Split(' ').Count() > 1)
@@ -254,6 +260,7 @@ namespace DrawingAppASE
         /// <summary>
         /// Gets called if the command is a shape command, clear, reset, move, pen or fill
         /// Executes the selected command
+        /// If user declares a variable, this method calls the ParseVariable method instead
         /// </summary>
         public static void ParseCommand(Graphics graphics, Pen pen, string input)
         {
@@ -406,10 +413,28 @@ namespace DrawingAppASE
         /// <summary>
         /// Gets called when a user declares a variable
         /// If variable with similar name does not exist, new variable object is created
-        /// Also gets called when an expression needs parsing
+        /// if value set to variable is an expression, calls ParseExpression method and assigns output as variable value
         /// </summary>
         /// <param name="input"></param>
         public static void ParseVariable(string input)
+        {
+            int value;
+            if (!input.Split('=')[1].Trim().All(char.IsDigit))
+            {
+                value = ParseExpression(input);
+            } else
+            {
+                value = ParseInt(input.Split('=')[1]);
+            }
+
+            Variable variable = new Variable(command, value);
+        }
+
+
+        /// <summary>
+        /// Calculates a given expression and returns the output as a DataTable object
+        /// </summary>
+        public static int ParseExpression(string input)
         {
             var expression = input.Split('=')[1].Trim();
             StringBuilder builder = new StringBuilder(expression);
@@ -421,8 +446,7 @@ namespace DrawingAppASE
                 }
             }
             string newExpression = builder.ToString();
-            var value = dataTable.Compute(newExpression, "");
-            var variable = new Variable(command, Convert.ToInt32(value));
+            return (int)dataTable.Compute(newExpression, "");
         }
 
         /// <summary>
