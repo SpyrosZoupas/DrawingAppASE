@@ -111,9 +111,9 @@ namespace DrawingAppASE
                         insideMethod = false;
                         executeCommands = true;
                         break;
-                    case "loop":
+                    case "loop":                       
                         insideLoop = true;
-                        iterations = Parser.ParseInt(input.Split(' ')[1]);                       
+                        iterations = ParseInt(input.Split(' ')[1]);                     
                         break;
                     case "endloop":
                         insideLoop = false;
@@ -300,12 +300,12 @@ namespace DrawingAppASE
                         switch (command)
                         {
                             case "moveto":
-                                    x = Parser.ParseInt(parameters[0]);
-                                    y = Parser.ParseInt(parameters[1]);                        
+                                    x = ParseInt(parameters[0]);
+                                    y = ParseInt(parameters[1]);                        
                                 break;
                             case "drawto":
-                                    paramList.Add(Parser.ParseInt(parameters[0]));
-                                    paramList.Add(Parser.ParseInt(parameters[1]));
+                                    paramList.Add(ParseInt(parameters[0]));
+                                    paramList.Add(ParseInt(parameters[1]));
                                     var drawTo = shapeFactory.CreateShape(command, paramList);
                                     drawTo.Draw(graphics, pen, fill);                             
                                 break;
@@ -337,13 +337,13 @@ namespace DrawingAppASE
                                     }
                                 break;
                             case "circle":
-                                    paramList.Add(Parser.ParseInt(parameters[0]));
+                                    paramList.Add(ParseInt(parameters[0]));
                                     var circle = shapeFactory.CreateShape(command, paramList);
                                     circle.Draw(graphics, pen, fill);
                                 break;
                             case "rectangle":                               
-                                    paramList.Add(Parser.ParseInt(parameters[0]));
-                                    paramList.Add(Parser.ParseInt(parameters[1]));
+                                    paramList.Add(ParseInt(parameters[0]));
+                                    paramList.Add(ParseInt(parameters[1]));
                                     var rectangle = shapeFactory.CreateShape(command, paramList);
                                     rectangle.Draw(graphics, pen, fill);                           
                                 break;
@@ -351,7 +351,7 @@ namespace DrawingAppASE
                                     var paramCounter = 0;
                                     foreach (var param in parameters)
                                     {
-                                        paramList.Add(Parser.ParseInt(parameters[paramCounter]));
+                                        paramList.Add(ParseInt(parameters[paramCounter]));
                                         paramCounter++;
                                     }
                                     var triangle = shapeFactory.CreateShape(command, paramList);
@@ -392,7 +392,7 @@ namespace DrawingAppASE
             int counter = 0;
             foreach (var param in parameters)
             {
-                var methodVariable = new Variable(methodParameters[counter], Parser.ParseInt(param));
+                var methodVariable = new Variable(methodParameters[counter], ParseInt(param));
                 counter++;
             }
         }
