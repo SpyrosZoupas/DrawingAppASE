@@ -37,7 +37,7 @@ namespace DrawingAppASE
         private static ShapeFactory shapeFactory = new ShapeFactory();
         private static DataTable dataTable = new DataTable();
         private static List<string> methodCommands = new List<string>();
-        private static Dictionary<string, string[]> methods = new Dictionary<string, string[]>();
+        private static List<string> methodsList = new List<string>();
         private static List<string> methodParameters = new List<string>();
         private static List<string> loopCommands = new List<string>();
         private static List<string> commandsList = new List<string>()
@@ -74,7 +74,7 @@ namespace DrawingAppASE
 
             lineCounter = 1;
             syntaxCorrect = true;
-            methods.Clear();
+            methodsList.Clear();
             foreach (var input in commands)
             {
                 command = input.Split(' ')[0];
@@ -129,11 +129,6 @@ namespace DrawingAppASE
                         {
                             executeCommands = false;
                         }
-                        
-                        //if (!Convert.ToBoolean(ParseExpression(input.Split(' ')[1].Trim())))
-                        //{
-                        //    executeCommands = false;
-                        //}
                         break;
                     case "endif":
                         executeCommands = true;
@@ -169,7 +164,11 @@ namespace DrawingAppASE
 
             if (!commandsList.Contains(command) & !commandsList.Contains(input.Split('(')[0]))
             {
-                graphics.DrawString("ERROR: Invalid command", myFont, Brushes.Red, new Point(2, 2));    
+                if (methodsList.Contains(input.Split('(')[0]))
+                {
+                    return true;
+                }
+                graphics.DrawString("ERROR: Invalid command", myFont, Brushes.Red, new Point(2, 2));
                 graphics.DrawString($"Error found in line: {lineCounter}", myFont, Brushes.Red, new Point(2, 30));
                 return false;
             }
@@ -247,11 +246,13 @@ namespace DrawingAppASE
             if (command == "method")
             {
                 nameOfMethod = input.Split(' ')[1].Split('(')[0];
-            }
-
-            if (command == "endmethod")
-            {
-                commandsList.Add(nameOfMethod);
+                if (methodsList.Contains(nameOfMethod))
+                {
+                    graphics.DrawString($"ERROR: a method with that name already exists", myFont, Brushes.Red, new Point(2, 2));
+                    graphics.DrawString($"Error found in line: {lineCounter}", myFont, Brushes.Red, new Point(2, 30));
+                    return false;
+                }
+                methodsList.Add(nameOfMethod);
             }
 
             return true;                    
@@ -278,11 +279,8 @@ namespace DrawingAppASE
                             y = 0;
                             break;
                         default:
-                            if (methods.ContainsKey(input.Split('(')[0]))
-                            {
-                                ParseMethod(input, command, graphics);
-                                ParseAction(graphics, pen, methodCommands);
-                            }                        
+                            CallMethod(input);
+                            ParseAction(graphics, pen, methodCommands);
                             break;
                     }
                 }
@@ -369,44 +367,33 @@ namespace DrawingAppASE
         /// Gets called if command is method
         /// checks if a method with the same name exists already in the program
         /// if a method with similar name exists produces an error
-        /// else saves the method with its name and parameters
+        /// else saves the method with its name and parameters, stops execution of commands as long as program is inside method
         /// </summary>
-        /// <param name="input"></param>
-        /// <param name="command"></param>
-        /// <param name="graphics"></param>
         public static void ParseMethod(string input, string command, Graphics graphics)
         {
-            if (command == "method")
+            var methodName = input.Split(' ')[1].Split('(')[0];
+            var parameters = input.Split(' ')[1].Split('(')[1].Split(')')[0].Split(',');
+            insideMethod = true;
+            executeCommands = false;
+            foreach (var param in parameters)
             {
-                var methodName = input.Split(' ')[1].Split('(')[0];
-                var parameters = input.Split(' ')[1].Split('(')[1].Split(')')[0].Split(',');
-                if (!methods.ContainsKey(methodName))
-                {
-                    methods.Add(key: methodName, value: parameters);
-                    insideMethod = true;
-                    executeCommands = false;
-                    foreach (var param in parameters)
-                    {
-                        var methodVariable = new Variable(param, 0);
-                        methodParameters.Add(param);
-                    }
-                }
-                else
-                {
-                    graphics.DrawString($"ERROR: a method with that name already exists", myFont, Brushes.Red, new Point(2, 2));
-                    graphics.DrawString($"Error found in line: {lineCounter}", myFont, Brushes.Red, new Point(2, 30));
-                }
-            } 
-            else
+                methodParameters.Add(param);
+            }      
+        }
+
+        /// <summary>
+        /// Gets called when user calls one of their own declared methods
+        /// sets values to the user's method parameters
+        /// </summary>
+        public static void CallMethod(string input)
+        {
+            var methodName = input.Split('(')[0];
+            var parameters = input.Split('(')[1].Split(')')[0].Split(',');
+            int counter = 0;
+            foreach (var param in parameters)
             {
-                var methodName = input.Split('(')[0];
-                var parameters = input.Split('(')[1].Split(')')[0].Split(',');
-                int counter = 0;
-                foreach (var param in parameters)
-                {
-                    var methodVariable = new Variable(methodParameters[counter], Parser.ParseInt(param));
-                    counter++;
-                }
+                var methodVariable = new Variable(methodParameters[counter], Parser.ParseInt(param));
+                counter++;
             }
         }
 
@@ -415,7 +402,6 @@ namespace DrawingAppASE
         /// If variable with similar name does not exist, new variable object is created
         /// if value set to variable is an expression, calls ParseExpression method and assigns output as variable value
         /// </summary>
-        /// <param name="input"></param>
         public static void ParseVariable(string input)
         {
             int value;
