@@ -1,9 +1,8 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using DrawingAppASE;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
+
 namespace DrawingAppASE.Tests
 {
     /// <summary>
