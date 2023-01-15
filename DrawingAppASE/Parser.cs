@@ -95,7 +95,7 @@ namespace DrawingAppASE
                 {
                     loopCommands.Add(input);
                 }
-
+               
                 switch (command)
                 {
                     case "method":                       
@@ -105,7 +105,8 @@ namespace DrawingAppASE
                         insideMethod = false;
                         executeCommands = true;
                         break;
-                    case "loop":                       
+                    case "loop":
+                        loopCounter = 0;
                         insideLoop = true;
                         iterations = ParseInt(input.Split(' ')[1]);                     
                         break;
@@ -115,7 +116,6 @@ namespace DrawingAppASE
                         if (loopCounter < iterations)
                         {
                             ParseAction(graphics, pen, loopCommands);
-                            loopCounter = 0;
                         }
                         break;
                     case "if":
