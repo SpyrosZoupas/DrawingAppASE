@@ -8,7 +8,6 @@ using System.IO;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using static System.Net.Mime.MediaTypeNames;
 
@@ -150,11 +149,11 @@ namespace DrawingAppASE
                 }
                 catch (FormatException)
                 {
-                    graphics.DrawString("ERROR: Parameter has to be an integer or variable", myFont, Brushes.Red, new Point(2, 2));                   
+                    graphics.DrawString("ERROR: Parameter has to be an integer or variable", myFont, Brushes.Red, new Point(2, 2));
                 }
                 catch (SyntaxErrorException)
                 {
-                    graphics.DrawString("ERROR: variable values can only be numbers", myFont, Brushes.Red, new Point(2, 2));                 
+                    graphics.DrawString("ERROR: variable values can only be numbers", myFont, Brushes.Red, new Point(2, 2));
                 }
                 catch (EvaluateException)
                 {

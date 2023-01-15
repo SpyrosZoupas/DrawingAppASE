@@ -151,6 +151,24 @@ namespace DrawingAppASE.Tests
             }
         }
 
+        //[TestMethod]
+        //public void ParseMethod_WhenProvidedWithValidMethodNameAndValidMethodParameters_SaveMethodNameAndMethodParameters()
+        //{
+        //    Dictionary<string, string[]> methods;
 
+        //    var input = "method test(x,y,z)";
+        //    var command = "method";
+        //    string[] parameters = { "x", "y", "z" };
+        //    bool insideMethod = false;
+        //    bool executeCommands = true;
+        //    var bitmap = new Bitmap(300, 500);
+        //    var graphics = Graphics.FromImage(bitmap);
+        //    var expectedMethods = new Dictionary<string, string[]>() { { "test", parameters } };
+
+        //    Parser.ParseMethod(input, command, graphics);
+
+        //    Assert.AreEqual(insideMethod, true);
+        //    Assert.AreEqual(executeCommands, false);
+        //}
     }
 }

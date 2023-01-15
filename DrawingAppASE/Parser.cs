@@ -1,17 +1,9 @@
-﻿using Antlr.Runtime;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Drawing;
-using System.Drawing.Text;
 using System.Linq;
-using System.Linq.Dynamic.Core.Parser;
-using System.Linq.Expressions;
-using System.Net;
-using System.Reflection;
-using System.Runtime.CompilerServices;
 using System.Text;
-using System.Windows.Forms;
 
 namespace DrawingAppASE
 {
@@ -27,6 +19,7 @@ namespace DrawingAppASE
         private static int loopCounter = 0;
         public static int lineCounter = 1;
         private static string command;
+        private static string[] parameters;
         private static string nameOfMethod;
         private static bool fill = false;
         private static bool executeCommands = true;
@@ -62,6 +55,7 @@ namespace DrawingAppASE
         /// <summary>
         /// Parses each line of commands from <paramref name="commands"/>
         /// Calls CheckSyntax method before starting execution to check for errors
+        /// If an error is found returns false before executing any commands
         /// Calls the appropriate method depending on the nature of each command
         /// </summary>
         /// <param name="commands">collection of one or more user commands being parsed</param>
@@ -288,7 +282,7 @@ namespace DrawingAppASE
                 {
                     List<int> paramList = new List<int> { x, y };
 
-                    var parameters = input.Split(' ')[1].Split(',');
+                    parameters = input.Split(' ')[1].Split(',');
 
                     if (parameters[0] == "=")
                     {                       
@@ -323,7 +317,7 @@ namespace DrawingAppASE
                                             break;
                                         case "yellow":
                                             pen.Color = Color.Yellow;
-                                            break;                                      
+                                            break;                                     
                                     }                            
                                 break;
                             case "fill":
@@ -408,7 +402,8 @@ namespace DrawingAppASE
             if (!input.Split('=')[1].Trim().All(char.IsDigit))
             {
                 value = ParseExpression(input);
-            } else
+            } 
+            else
             {
                 value = ParseInt(input.Split('=')[1]);
             }
@@ -418,7 +413,7 @@ namespace DrawingAppASE
 
 
         /// <summary>
-        /// Calculates a given expression and returns the output as a DataTable object
+        /// Calculates a given expression and returns the output as an integer
         /// </summary>
         public static int ParseExpression(string input)
         {
@@ -457,6 +452,6 @@ namespace DrawingAppASE
                 lineCounter--;
                 throw new FormatException();
             }
-        }      
+        }
     }
 }
