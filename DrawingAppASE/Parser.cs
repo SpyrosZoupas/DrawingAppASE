@@ -365,7 +365,6 @@ namespace DrawingAppASE
         /// </summary>
         public static void ParseMethod(string input, string command, Graphics graphics)
         {
-            var methodName = input.Split(' ')[1].Split('(')[0];
             var parameters = input.Split(' ')[1].Split('(')[1].Split(')')[0].Split(',');
             insideMethod = true;
             executeCommands = false;
@@ -381,7 +380,6 @@ namespace DrawingAppASE
         /// </summary>
         public static void CallMethod(string input)
         {
-            var methodName = input.Split('(')[0];
             var parameters = input.Split('(')[1].Split(')')[0].Split(',');
             int counter = 0;
             foreach (var param in parameters)
